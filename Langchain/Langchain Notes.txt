@@ -1,0 +1,36 @@
+Langchain:
+Its a framework used to build llm apps (Conversational Chatbot, AI Assistant, AI Agents, etc).
+Feature:
+- Concepts of Chaining
+- Model Agnostic
+- Memory and State Handling
+
+----------------------------------------------------------
+
+Component of Langchain:
+
+Models:
+Core interface through which we interact with llms/ models.
+
+- Types:
+  LLMs -  General Purpose models used for raw text generation, its traditional option. (Input = plain text , Output = plain text)
+  ChatModels - Conversational task specialized language model. (Input = msg seq, Output = chat msg)
+
+- Feature:               LLMs                                      ChatModels
+  Memory context      No buitin memory                    Support structured conversation history
+  Role awareness      No role understanding               Understands "system", "assistant" , "user"
+  Use case            Text generation, translation   	  Conversational Ai, chatbots
+
+
+Prompts:
+Any input/instruction or queries given to a model to guide its output.
+Types:
+Single Prompt - Single turn stand alone message
+   Multiline Prompt - Multi turn conversation
+
+
+
+- Chains:    Sequential or Parallel Data/Workflow Pipeline.
+- Indexes:   Connects app to external knowledge base (Files, Websites, Databases).
+- Memory:    Stateful conversation with llms.
+- AI Agents: LLM + Reasoning Capability + Tool Calling.
