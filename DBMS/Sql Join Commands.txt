@@ -1,0 +1,133 @@
+Sure! Let's take an example of two tables: **Students** and **Courses**.
+
+### **Students Table**:
+| student_id | name  | course_id |
+|------------|-------|-----------|
+| 1          | Alice | 101       |
+| 2          | Bob   | 102       |
+| 3          | Charlie| 103      |
+| 4          | David | NULL      |
+
+### **Courses Table**:
+| course_id | course_name     |
+|-----------|-----------------|
+| 101       | Mathematics      |
+| 102       | History          |
+| 104       | Science          |
+
+Now let's explore different types of **joins** using these tables.
+
+### 1. **INNER JOIN**:
+- Combines rows where there is a match in both tables (based on `course_id`).
+
+**Query**:
+```sql
+SELECT students.name, courses.course_name 
+FROM students 
+INNER JOIN courses ON students.course_id = courses.course_id;
+```
+
+**Result**:
+| name   | course_name |
+|--------|-------------|
+| Alice  | Mathematics |
+| Bob    | History     |
+
+### 2. **LEFT JOIN**:
+- Returns all rows from the left table (**Students**) and matching rows from the right table (**Courses**). If no match, returns NULL for the unmatched rows.
+
+**Query**:
+```sql
+SELECT students.name, courses.course_name 
+FROM students 
+LEFT JOIN courses ON students.course_id = courses.course_id;
+```
+
+**Result**:
+| name    | course_name  |
+|---------|--------------|
+| Alice   | Mathematics  |
+| Bob     | History      |
+| Charlie | NULL         |
+| David   | NULL         |
+
+### 3. **RIGHT JOIN**:
+- Returns all rows from the right table (**Courses**) and matching rows from the left table (**Students**). If no match, returns NULL for the unmatched rows.
+
+**Query**:
+```sql
+SELECT students.name, courses.course_name 
+FROM students 
+RIGHT JOIN courses ON students.course_id = courses.course_id;
+```
+
+**Result**:
+| name    | course_name  |
+|---------|--------------|
+| Alice   | Mathematics  |
+| Bob     | History      |
+| NULL    | Science      |
+
+### 4. **FULL OUTER JOIN**:
+- Combines rows where there is a match in either table. If no match, NULL is returned for missing records.
+
+**Query**:
+```sql
+SELECT students.name, courses.course_name 
+FROM students 
+FULL OUTER JOIN courses ON students.course_id = courses.course_id;
+```
+
+**Result**:
+| name    | course_name  |
+|---------|--------------|
+| Alice   | Mathematics  |
+| Bob     | History      |
+| Charlie | NULL         |
+| David   | NULL         |
+| NULL    | Science      |
+
+### 5. **CROSS JOIN**:
+- Returns the Cartesian product of both tables (every row from Students with every row from Courses).
+
+**Query**:
+```sql
+SELECT students.name, courses.course_name 
+FROM students 
+CROSS JOIN courses;
+```
+
+**Result**:
+| name    | course_name  |
+|---------|--------------|
+| Alice   | Mathematics  |
+| Alice   | History      |
+| Alice   | Science      |
+| Bob     | Mathematics  |
+| Bob     | History      |
+| Bob     | Science      |
+| Charlie | Mathematics  |
+| Charlie | History      |
+| Charlie | Science      |
+| David   | Mathematics  |
+| David   | History      |
+| David   | Science      |
+
+### 6. **SELF JOIN**:
+- A self-join to find pairs of students who are enrolled in the same course.
+
+**Query**:
+```sql
+SELECT S1.name AS 'Student 1', S2.name AS 'Student 2'
+FROM students S1
+INNER JOIN students S2 ON S1.course_id = S2.course_id 
+WHERE S1.student_id != S2.student_id;
+```
+
+**Result**:
+| Student 1 | Student 2 |
+|-----------|-----------|
+
+In this case, no result is returned because no two students are enrolled in the same course.
+
+These examples demonstrate how different types of joins work in SQL using the **Students** and **Courses** tables.

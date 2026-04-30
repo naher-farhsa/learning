@@ -1,0 +1,104 @@
+### SQL Commands are divided into several categories, primarily:
+1. **DDL (Data Definition Language)**
+2. **DML (Data Manipulation Language)**
+
+Let’s break them down with examples:
+
+---
+
+## **1. DDL (Data Definition Language)**
+
+DDL commands deal with the **structure** of the database objects like tables, indexes, views, etc.
+
+### Important DDL Commands:
+
+- **CREATE**: Used to create new database objects like tables, databases, indexes, etc.
+  
+  **Example**:
+  ```sql
+  CREATE TABLE Students (
+      student_id INT PRIMARY KEY,
+      name VARCHAR(50),
+      course_id INT
+  );
+  ```
+
+- **ALTER**: Used to modify an existing database object like a table (adding, deleting, or modifying columns).
+  
+  **Example**:
+  ```sql
+  ALTER TABLE Students ADD email VARCHAR(100);
+  ```
+
+- **DROP**: Deletes a database object like a table or database permanently.
+  
+  **Example**:
+  ```sql
+  DROP TABLE Students;
+  ```
+
+- **TRUNCATE**: Removes all rows from a table, but keeps the structure intact.
+  
+  **Example**:
+  ```sql
+  TRUNCATE TABLE Students;
+  ```
+
+- **RENAME**: Used to rename a table or other database objects.
+  
+  **Example**:
+  ```sql
+  ALTER TABLE Students RENAME TO UniversityStudents;
+  ```
+
+---
+
+## **2. DML (Data Manipulation Language)**
+
+DML commands deal with the **data** in the tables.
+
+### Important DML Commands:
+
+- **SELECT**: Retrieves data from one or more tables.
+  
+  **Example**:
+  ```sql
+  SELECT * FROM Students;
+  ```
+
+- **INSERT**: Inserts new data into a table.
+  
+  **Example**:
+  ```sql
+  INSERT INTO Students (student_id, name, course_id) 
+  VALUES (1, 'Alice', 101);
+  ```
+
+- **UPDATE**: Modifies existing data in a table.
+  
+  **Example**:
+  ```sql
+  UPDATE Students 
+  SET name = 'Bob' 
+  WHERE student_id = 1;
+  ```
+
+- **DELETE**: Removes rows from a table.
+  
+  **Example**:
+  ```sql
+  DELETE FROM Students 
+  WHERE student_id = 1;
+  ```
+
+---
+
+### **Summary of DDL vs. DML:**
+
+- **DDL** focuses on the structure of the database.
+  - Commands: `CREATE`, `ALTER`, `DROP`, `TRUNCATE`, `RENAME`
+  
+- **DML** focuses on manipulating the actual data.
+  - Commands: `SELECT`, `INSERT`, `UPDATE`, `DELETE`
+
+These commands are essential for managing databases, and they form the core of SQL operations.

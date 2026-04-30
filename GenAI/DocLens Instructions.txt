@@ -1,0 +1,39 @@
+I m developing a basic rag-bot app (DocLens):
+Below are the overwiew steps i will be doing more or less 
+- ingestion pipeline: 
+  - Doc Loading
+  - Doc Chunking
+  - Model Loading
+  - Chunk Embedding
+  - Vector Storing
+- retrieval and augmentation pipeline:
+  - Vector Loading
+  - Query Embedding
+  - Vector Searching
+- generation pipeline:
+   - Model Loading
+   - Prompt (Query+Chunk) Merging
+   - Structured Output Generation 
+ 
+Required Modules/Package:
+- .env Loader: dotenv
+- Doc Loader: Langchain Pypdf loader
+- Doc Chunker: Langchain (experimental) Semantic Chunking 
+- Chunk Retrievar: Langchain EnsembleRetriever, BM25Retriever
+- Model Loading: Langchain ChatGoogle, GoogleGenerativeAIEmbeddings
+- Vector Store: Langchain Chroma
+- Search Tool: ChatGoogle bindtool (Google Search)
+
+Additional:
+- Chunking Strategy: Semantic Chunking
+- Retrieval Strategy: Hybrid Searching (Vetor Search+ Keyword Search)
+- Prompting Strategy: ChatML + History Aware (Using [] list)
+
+Tools:
+- LLM: google gemini 3 flash
+- Embedding Model: gemini-embedding-2-preview
+- Framework: langchain
+- Vector DB: chromadb
+
+
+

@@ -1,0 +1,112 @@
+IMP Question pattern based on techniques:
+
+1.Prefix Sum
+  Subarray with a given sum.
+  Equilibrium index in an array.
+  Count subarrays with sum divisible by K.
+  Maximum sum of subarray after K modifications.
+  Range sum queries in an array.
+
+2.Carry Forward
+  Maximum difference between two elements such that larger appears after smaller.
+  Minimum number of platforms required (train schedule problem).
+  Largest element on the right of every element (next greater element).
+  Stock buy and sell for maximum profit.
+  Find subarray with the maximum product.
+
+3.Subarrays
+  Find the maximum sum subarray (Kadane’s Algorithm).
+  Count subarrays with a given XOR.
+  Smallest subarray with a sum greater than a given value.  
+  Longest subarray with equal numbers of 0s and 1s.
+  Count subarrays with all distinct elements.
+
+4.Sliding Window
+  Maximum sum of all subarrays of size K.
+  Longest substring without repeating characters.
+  Count anagrams of a string in another string.
+  Minimum window substring containing all characters of another string.
+  Find the maximum of each window of size K in an array.
+
+5.2D Matrix
+  Find the sum of all submatrices of a given matrix.
+  Rotate a matrix by 90 degrees clockwise.
+  Find the largest square submatrix with all 1s.
+  Search for an element in a row and column sorted matrix. 
+  Transpose of a matrix in-place.
+
+6.Modulo
+  Find the remainder of a very large number divided by K.
+  Count subarrays with sum divisible by K.
+  Pair sum divisible by K.
+  Modular exponentiation.
+  Check if a number is divisible by 3 using its digit sum.
+
+7.Bit Manipulation
+  Find the single non-repeating element in an array.
+  Check if a number is a power of 2.
+  Count the number of set bits in an integer.
+  XOR of all subsets of an array.
+  Find the two non-repeating elements in an array.
+
+8.Sorting
+  Merge two sorted arrays without extra space.
+  Find Kth smallest or largest element in an array.
+  Sort an array of 0s, 1s, and 2s (Dutch National Flag Problem).
+  Triplets with a sum equal to zero.
+  Find the minimum difference between two arrays.
+
+9.String
+  Check if two strings are anagrams.
+  Find the longest palindromic substring.
+  Reverse words in a sentence.
+  Find the smallest window containing all characters of another string.
+  Count distinct substrings of a string.
+
+10.Hashing (HashMap/HashSet)
+  Longest substring without repeating characters.
+  Count subarrays with sum zero.
+  Detect if a string can be rearranged into a palindrome.
+  Find the intersection of two arrays.
+  Check if two strings are isomorphic.
+
+11.Recursion
+  Generate all permutations of a string.
+  Tower of Hanoi problem.
+  Solve the N-Queens problem.
+  Find all subsets of a set.
+  Fibonacci sequence using recursion.
+
+12.Stack/Queue
+  Implement a queue using two stacks.
+  Check if a string has balanced parentheses.
+  Evaluate a postfix expression.
+  Find the maximum of each window of size K in an array using deque.
+  Find the celebrity in a party.
+ 
+13.Linked List
+  Reverse a linked list.
+  Detect and remove a loop in a linked list.
+  Find the middle element of a linked list.
+  Merge two sorted linked lists.
+  Detect the starting point of a cycle in a linked list.
+
+14.Tree
+  Find the height of a binary tree.
+  Inorder, Preorder, and Postorder traversal of a tree.
+  Check if a binary tree is balanced.
+  Lowest common ancestor of two nodes in a binary tree.
+  Serialize and deserialize a binary tree.
+
+15.Dynamic Programming (DP)
+  Longest increasing subsequence.
+  0/1 Knapsack problem.
+  Longest common subsequence.
+  Minimum edit distance between two strings. 
+  Find the number of ways to climb N stairs.
+
+
+
+
+
+

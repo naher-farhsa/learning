@@ -1,0 +1,191 @@
+Yes, SQL has several important commands related to different **clauses** that enhance queries and manage data retrieval effectively. Here are some important ones:
+
+### **Clauses in SQL**:
+
+#### 1. **WHERE Clause**
+- Filters records that meet a specific condition.
+  
+  **Example**:
+  ```sql
+  SELECT * FROM Students 
+  WHERE course_id = 101;
+  ```
+
+#### 2. **ORDER BY Clause**
+- Sorts the result set in ascending (`ASC`) or descending (`DESC`) order based on one or more columns.
+  
+  **Example**:
+  ```sql
+  SELECT * FROM Students 
+  ORDER BY name ASC;
+  ```
+
+#### 3. **GROUP BY Clause**
+- Groups rows that have the same values in specified columns into aggregated data (useful with functions like `COUNT`, `SUM`, `AVG`).
+  
+  **Example**:
+  ```sql
+  SELECT course_id, COUNT(*) AS student_count 
+  FROM Students 
+  GROUP BY course_id;
+  ```
+
+#### 4. **HAVING Clause**
+- Used to filter rows after the `GROUP BY` operation. It's similar to `WHERE`, but works with aggregates.
+  
+  **Example**:
+  ```sql
+  SELECT course_id, COUNT(*) AS student_count 
+  FROM Students 
+  GROUP BY course_id 
+  HAVING COUNT(*) > 1;
+  ```
+
+#### 5. **LIMIT Clause** (or **TOP** in some databases)
+- Limits the number of rows returned by the query.
+  
+  **Example**:
+  ```sql
+  SELECT * FROM Students 
+  LIMIT 3;
+  ```
+
+  (For SQL Server, use `TOP`):
+  ```sql
+  SELECT TOP 3 * FROM Students;
+  ```
+
+#### 6. **JOIN Clause**
+- Combines rows from two or more tables based on a related column.
+
+  - **INNER JOIN**: Returns only matching records.
+  - **LEFT JOIN**: Returns all records from the left table and matching records from the right.
+  - **RIGHT JOIN**: Returns all records from the right table and matching records from the left.
+  - **FULL JOIN**: Returns all matching and non-matching records from both tables.
+  
+  **Example**:
+  ```sql
+  SELECT Students.name, Courses.course_name 
+  FROM Students 
+  INNER JOIN Courses ON Students.course_id = Courses.course_id;
+  ```
+
+#### 7. **DISTINCT Clause**
+- Removes duplicate rows from the result set.
+  
+  **Example**:
+  ```sql
+  SELECT DISTINCT course_id 
+  FROM Students;
+  ```
+
+#### 8. **UNION Clause**
+- Combines the result sets of two or more `SELECT` queries. It removes duplicates by default. Use `UNION ALL` to include duplicates.
+  
+  **Example**:
+  ```sql
+  SELECT name FROM Students 
+  UNION 
+  SELECT name FROM Teachers;
+  ```
+
+#### 9. **IN Clause**
+- Checks if a value exists within a set of values.
+  
+  **Example**:
+  ```sql
+  SELECT * FROM Students 
+  WHERE course_id IN (101, 102);
+  ```
+
+#### 10. **BETWEEN Clause**
+- Filters rows within a certain range of values (for numeric or date ranges).
+  
+  **Example**:
+  ```sql
+  SELECT * FROM Students 
+  WHERE student_id BETWEEN 1 AND 3;
+  ```
+
+#### 11. **LIKE Clause**
+- Used to search for a specified pattern in a column (usually combined with wildcards like `%` and `_`).
+  
+  **Example**:
+  ```sql
+  SELECT * FROM Students 
+  WHERE name LIKE 'A%';  -- names starting with 'A'
+  ```
+
+#### 12. **EXISTS Clause**
+- Returns `TRUE` if the subquery returns one or more rows.
+  
+  **Example**:
+  ```sql
+  SELECT * FROM Students 
+  WHERE EXISTS (SELECT * FROM Courses WHERE course_id = Students.course_id);
+  ```
+
+#### 13. **IS NULL / IS NOT NULL**
+- Filters rows with `NULL` or non-`NULL` values.
+  
+  **Example**:
+  ```sql
+  SELECT * FROM Students 
+  WHERE course_id IS NULL;
+  ```
+
+---
+
+### **Aggregate Functions with GROUP BY**:
+1. **COUNT()**: Counts the number of rows.
+2. **SUM()**: Adds the values of a numeric column.
+3. **AVG()**: Calculates the average value of a numeric column.
+4. **MAX()**: Returns the largest value.
+5. **MIN()**: Returns the smallest value.
+
+**Example**:
+```sql
+SELECT course_id, AVG(marks) 
+FROM Students 
+GROUP BY course_id;
+```
+
+---
+
+### **CASE Clause**
+- Used to implement conditional logic in SQL queries.
+
+**Example**:
+```sql
+SELECT name, 
+       CASE 
+           WHEN course_id = 101 THEN 'Mathematics'
+           WHEN course_id = 102 THEN 'History'
+           ELSE 'Unknown'
+       END AS course_name 
+FROM Students;
+```
+
+---
+
+### **Aliases**
+- Temporarily renames a table or column for the purpose of the query.
+
+**Example**:
+```sql
+SELECT s.name AS StudentName, c.course_name AS CourseName
+FROM Students s 
+JOIN Courses c ON s.course_id = c.course_id;
+```
+
+---
+
+### **Key Clauses Summary:**
+- **WHERE**: Filters rows before aggregation.
+- **GROUP BY**: Groups rows into aggregated results.
+- **HAVING**: Filters aggregated results.
+- **ORDER BY**: Sorts the result set.
+- **LIMIT**: Restricts the number of rows returned.
+- **JOIN**: Combines rows from multiple tables.
+
+These clauses help refine data retrieval and management in SQL, enhancing flexibility and control over queries.

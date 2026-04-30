@@ -1,0 +1,125 @@
+
+1. ArrayList
+
+In Galaxy Xon, life started on 1-January-2003. Galaxy Xon follows Gregorian calendar.
+Given n, number of days, print date on nth day.
+
+Input : 32
+Output : 1-February-2004
+
+Input : 365
+Outout : 31-December-2003
+
+Input : 732
+Output : 1-January-2005 (2004 is leap year)
+
+
+2. TreeSet & LinkedHashSet
+
+Mr Simon has been English teacher at St.Thomas for 5 year. On his last day, Mr. Simon asked his students to give 
+review in one word on his teaching so that he can add in his resume before appplying to Oxford Universiy.
+Students give there reviews in a String array.
+
+Print number of Unique reviews given.
+Also print unique reviews in
+a) Ascending Order (TreeSet)
+b) In same order as input (LinkedHshSet)
+
+Input : [Unsatifactory, Good, Good, Nice, Nice, Nice, Nice, Great]
+
+Output : 
+
+Number of Unique reviews = 4
+Asceding order : Great, Good, Nice, Unsatisfactory
+Same order as input : Unsatifactory, Good, Nice, Great
+
+
+
+
+3. HashMap
+
+In Galaxy Xon, life started on 1-January-2003. Galaxy Xon follows Gregorian calendar.
+Given date, print nth day.
+
+Input : 1-February-2004
+Output : 32
+
+Input : 31-December-2003
+Output : 365
+
+Input : 1-January-2005 (2004 is leap year)
+Output : 732
+
+
+4. PriorityQueue
+
+You are given an array A of integers that represent the lengths of ropes.
+
+You need to connect these ropes into one rope. The cost of joining two ropes equals the sum of their lengths.
+
+Find and return the minimum cost to connect these ropes into one rope.
+
+Example Input
+Input 1:
+
+ A = [1, 2, 3, 4, 5]
+Input 2:
+
+ A = [5, 17, 100, 11]
+
+
+Example Output
+Output 1:
+
+ 33
+Output 2:
+
+ 182
+
+
+Example Explanation
+Explanation 1:
+
+ Given array A = [1, 2, 3, 4, 5].
+ Connect the ropes in the following manner:
+ 1 + 2 = 3
+ 3 + 3 = 6
+ 4 + 5 = 9
+ 6 + 9 = 15
+
+ So, total cost  to connect the ropes into one is 3 + 6 + 9 + 15 = 33.
+Explanation 2:
+
+ Given array A = [5, 17, 100, 11].
+ Connect the ropes in the following manner:
+ 5 + 11 = 16
+ 16 + 17 = 33
+ 33 + 100 = 133
+
+ So, total cost  to connect the ropes into one is 16 + 33 + 133 = 182.
+
+
+
+
+5. LinkedHashMap
+
+Given a word print number of occurence for each letter, in order as mentioned in input.
+
+Input : aabkdcbbba
+
+Output : [a=3 , b=4, k=1, d=1, c=1]
+
+6. GIven array of character with '(' and ')', print true if parenthesis are balanced else not.
+
+Input : (())
+Output : True
+
+Input : ()()
+Output : True
+
+Input : )(
+Output : False
+
+
+
+

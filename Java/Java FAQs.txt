@@ -1,0 +1,377 @@
+
+•Java compile and execution flow:
+ source code(.java) + javac -> byte code(.class) + jvm -> machine code(.exe)
+
+•JDK:
+1. **javac**: The Java compiler, which converts source code into bytecode.
+2. **java**: The launcher for running Java applications.
+3. **javadoc**: Generates documentation from Java source code.
+4. **jdb**: The Java debugger for debugging applications.
+5. **jar**: For creating and managing JAR (Java ARchive) files.
+6. **javap**: The class file disassembler for analyzing bytecode. 
+
+•JRE:
+
+1. **JVM (Java Virtual Machine)**: Executes Java bytecode and provides the runtime environment.
+2. **Core Libraries**: Essential Java class libraries like `java.lang`,        `java.util`, and `java.io` that provide basic functionality.
+3. **Class Loader**: Loads Java class files into memory as needed.
+4. **Garbage Collector**: Manages memory by automatically cleaning up unused objects.
+
+•JVM: Java bytecode (.class) to machine code (.exe) using JIT compilation
+
+•Range and default value:
+1. **byte**: 
+   - Range: \(-2^{7}\) to \(2^{7} - 1\) (or -128 to 127)
+   - default: 0
+2. **short**: 
+   - Range: \(-2^{15}\) to \(2^{15} - 1\) (or -32,768 to 32,767)
+   - default: 0
+3. **int**: 
+   - Range: \(-2^{31}\) to \(2^{31} - 1\) (or -2,147,483,648 to 2,147,483,647)
+   - default: 0
+
+4. **char**: 
+   - Range: \(0\) to \(2^{16} - 1\) (or 0 to 65,535), representing Unicode char.
+   - default: '\u0000' or null char
+
+5. **boolean**: 
+   - No specific range, but it can hold one of two values: `true` or `false`.
+   - default: false
+
+6. **Object**:
+   - default: null
+
+•Interface and Abstract class:
+
+Abstract class- blueprint for other classes that can't be used directly and may have some methods already defined. (Allow loose coupling in java).
+
+Interface- set of rules that classes can follow, all interface function must be implemented by class.  (Allow multiple inheritance in java).
+
+•OOPs:
+
+1. Abstraction - Hiding unwanted attributes / implementation of class from user. (abstract , interface).
+
+
+2. Inheritance - Acquring attributes of parent object by its child objects.
+ (extends , implements).
+
+3. Encapsualtion - Binding attributes and methods in a unit form (class , object).
+
+4. Polymorphism - Utilizing same function to perform multiple operations of same kind.
+   Overloading - Static polymorphism (compile time)  
+   Overridding - Dynamic polymorphism (Runtime) 
+
+• main() method facts
+ 1. Syntax - public static void main(String[] args){} 
+ 2. Parameters - String array is used since, string can have any alphanumeric and symbol values.
+3.I/O - We can use 'args' for command line arguments or Scanner class etc.
+
+•Constructor - Special method with same name as its class and called when an object of class created. 
+We need constructors to ensure that objects are created with default or specified values and in a valid state.
+We cannot inherit a constructor
+
+•super, this, final, continue, break and finally keyword
+ super- Used to access parent class methods in its child class.
+ this - Used to access current class methods.
+ final - Used to make variable immutable.
+ continue - Used to skip current iteration 
+ break  - Used to come out of the entire iteration loop.
+ finally - Used to execute code even after some exception occurs.
+ 
+•Reference vs pointer - Using reference we can only access and modify object, while using pointer(not in java) we can do same + increment or decrement reference value.
+
+•Primitive variables - contain their values directly in memory.
+ Reference variables - contain the location (reference) of the object in memory.
+
+•Object Class- Super class of every class in java.
+
+
+•String: An immutable sequence of characters; once created, its value cannot be changed.
+  
+•StringBuilder: A mutable sequence of characters that allows for efficient modifications (like appending or inserting) without creating new objects,but non synchronized i.e thread-unsafe.
+
+•StringBuffer: Similar to StringBuilder, but is synchronized, making it thread-safe. 
+
+
+
+-----------------------------------------------------------------------------
+class B {
+    int a = 10; // Instance variable in class B
+    void display() {
+        System.out.println("Display from B");
+    }
+}
+
+class C extends B {
+    int a = 20; // Instance variable in class C (hides variable in B)
+    void display() {
+        System.out.println("Display from C");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        B b = new C();  // Upcasting to B  <============================
+        b.display();    // Calls the overridden method in C
+        System.out.println(b.a); // Accesses variable 'a' from B, not C
+
+        C c = new C(); // Normal instantiation of C <=============================
+        c.display();    // Calls the display method in C
+        System.out.println(c.a); // Accesses variable 'a' from C
+    }
+}
+```
+
+### Output:
+
+Display from C
+10
+Display from C
+20
+
+1. **Method Overriding**:
+   - When you call `b.display()`, it executes the `display()` method from class `C`, because the method is overridden. The runtime type of `b` is `C`, so the overridden method in `C` is executed.
+
+2. **Variable Hiding**:
+   - When you access `b.a`, it refers to the variable `a` defined in class `B` (which is `10`), not `C`'s `a` (which is `20`). This is because instance    variables are not polymorphic; the reference type determines which variable is accessed.
+
+   - When you access `c.a`, it correctly refers to `C`'s `a` (which is `20`).
+
+Summary:
+- Method calls are resolved at runtime based on the actual object type (dynamic dispatch), leading to the output from `C`.
+- Variable access is resolved at compile time based on the reference type, which is why `b.a` accesses `B`'s `a`.
+
+
+•Static Binding: In static binding, method or variable resolution is determined at compile time (Variable type ,overloading).
+
+Dynamic Binding: In dynamic binding, method resolution occurs at runtime based on the actual object type. overridding, object type).
+
+
+Authentication and Validation: 
+Only numeric: NumberFormatException
+Only Alphabet: matches(a-zA-Z)//regex + IllegalArgumentException
+
+NOTE: To pass PIN from url keep it in header for (HTTPS) or  use (BCryptPasswordEncoder) for HTTP
+
+•Spring: 
+  -DI 
+  -IOC container
+
+•Springboot: 
+  -Spring
+  -@SpringBootApplication + application.properties + Auto-configuration + Spring Boot Starter + Embedded Tomcat
+
+•Spring Data: 
+  -JPA + ORM + JDBC(direct access to db) 
+  -(@Entity ,@Id, @GeneratedValue, @OneToMany, @ManyToOne, @OneToOne, @ManyToMany, JpaRepository, EntityManager, JPQL 
+
+•Spring MVC: 
+  -@Controller, @RestController,
+  -@RequestMapping, @GetMapping, @PostMapping, @PutMapping, @DeleteMapping
+  -@RequestBody, @ResponseBody, @PathVariable
+  -ModelAndView, ModelMap, Model
+  -ViewResolver
+  -DispatcherServlet
+
+•Spring security:
+ -@EnableWebSecurity
+ -WebSecurityConfigurerAdapter
+ -AuthenticationManager
+ -OAuth2,JWT (JSON Web Token)
+ -PasswordEncoder
+ -Roles and Authorities
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
