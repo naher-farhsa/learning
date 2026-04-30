@@ -1,0 +1,136 @@
+NOTE: Overriding is the mechanism, DMS is the runtime application, and together they enable multiple inheritance via interfaces.
+
+
+
+
+Collection imp CRUD method
+
+List (ArrayList, LinkedList) - Ordered + Iterate(for):
+- add()
+- get()
+- set()
+- remove() / clear()
+- size()
+
+Set (HashSet, LinkedSet, TreeSet) - Unordered + Iterate(for):
+- add()
+- contains()
+- remove() -> add()
+- remove()
+- size()
+
+Map (HashMap, LinkedHashMap, TreeMap) - Unordered + Iterate( for + keySet()):
+- put()
+- get() / getOrDefault() / constainsKey()
+- put()
+- remove() / clear()
+- size()
+
+---------------------------------------------------------
+
+Functional Interface
+
+- accept()  (Consumer)  
+- get()     (Supplier) 
+- test()    (Predicate)
+- apply()   (Function) 
+- compare() (Comparator : Not a Functional Interfaces)
+
+Stream Api imp method
+
+Starter:
+- stream()
+- Stream.of()
+
+Intermediate (lazy): 
+- map()      -> (apply() - Funtion)
+- filter()   ->(test() - Prediacate)
+- distinct() ->(Object.hashCode() / Object.equals())
+- sorted()   -> (compare() - Comparator/ compareTo() - Comparable)
+
+Terminal (eager):
+-forEach()   -> (accept() - Consumer)
+-reduce()    -> (apply() + get() - but of BinaryOperator/BiFunction + Optional)
+-collect()   -> (get() - Supplier)
+-count()     -> (applyAsLong() - ToLongFunction)
+-min()/max() -> (compare() +get() - Optional + Comparator)
+
+--------------------------------------------------------------
+
+Utility Classes imp method
+
+Collections:
+- sort()
+- reverseOrder()
+
+Arrays:
+- sort()
+- asList()
+
+Collectors:
+- toList()
+- toSet()
+- toMap()
+
+StringBuilder/StringBuffer:
+- append()
+- insert()
+- delete()
+- reverse()
+- capacity()
+- size()
+
+Note : String (Immutable, Tread safe), StringBuilder ( Mutable, Thread Unsafe), StringBuffer (Mutable, Thread safe)
+
+Optional:
+- isEmpty()
+- isPresent()
+- orElse()
+- ofNullable()
+
+Iterator:
+- Actual iteration mechanism
+- hasNext()
+- next()
+- remove()
+
+Iterable:
+- iterator() -> gives an Iterator
+
+Comparator (interface) :
+- compare() -> Custom Ordering
+
+Comparable (interface):
+- compareTo() -> Natural Ordering
+
+
+io / nio:
+
+Byte io: InputStream, OutputStream (File/Data,Buffered)
+- read()
+- write()
+
+Char io: Reader, Writer, Scanner (File,Buffered) 
+- read()
+- readLine() (Scanner)
+- write()
+
+Byte Stream -> Char Stream 
+- read() (InputStreamReader)
+
+Char Stream -> Byte Stream
+- write() (OutputStreamWriter)
+
+Serialize/ Deserialize:
+(ObjectOutputStream)
+-  writeObject() = object -> byte stream
+(ObjectInputStream)
+- readObject() = byte stream -> object
+
+Theard :
+- run() (Runnable)
+- start()
+- sleep()
+- join()
+
+

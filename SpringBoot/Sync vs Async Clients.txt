@@ -1,0 +1,32 @@
+HTTP Client Comparison - Sync vs Async
+
+Client	Type	Sync/Async      Blocking/Non-Blocking                          Use Case
+RestTemplate	Synchronous	✅ Yes	❌ No	                               Traditional blocking REST calls
+WebClient	Asynchronous	❌ No	✅ Yes                                 Reactive, non-blocking calls
+OkHttp	        Synchronous	✅ Yes	⚠️ Callback-based	               Efficient HTTP client, can use interceptors
+HttpClient	Synchronous	✅ Yes	⚠️ Async variant available	       Low-level HTTP protocol client
+FeignClient	Synchronous	✅ Yes (by default) ⚠️ Via custom config      Declarative HTTP client (can wrap WebClient)
+
+Quick Summary
+Fully Async/Non-blocking: WebClient
+Fully Sync/Blocking: RestTemplate, OkHttp, HttpClient, FeignClient
+FeignClient can be configured to use WebClient for async behavior
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+| Tool/Protocol        | Type              | Sync/Async    | Use Case                               | Coupling | Best For                                             |
+|----------------------|-------------------|---------------|----------------------------------------|----------|--------------------------------------------
+| REST + FeignClient   | HTTP              | Synchronous   | Inter-service direct calls             | Tight    | Simple microservices, for instant response   |
+| WebClient            | HTTP              | Asynchronous  | Non-blocking inter-service calls       | Tight    | Reactive systems, high throughput                    |
+| gRPC                 | HTTP/2            | Synchronous   | High-performance inter-service         | Tight    | Real-time, low latency needs                         |
+| Kafka                | Message Queue     | Asynchronous  | Event-driven, async processing         | Loose    | Multi consumers, event stream, decoupling
+| 
+| RabbitMQ             | Message Queue     | Asynchronous  | Task queues, pub-sub messaging         | Loose    | Reliable delivery, complex routing                   |
+| HTTP Webhooks        | HTTP Callback     | Asynchronous  | Event notifications                    | Loose    | External integrations, notifications                 |
+| WebSockets           | TCP               | Bidirectional | Real-time communication                | Tight    | Live chat, notifications, dashboards                 |
+| MQTT                 | Pub-Sub Protocol  | Asynchronous  | IoT, lightweight messaging             | Loose    | IoT devices, lightweight protocols                   |
+| JMS                  | Message Queue     | Asynchronous  | Java enterprise messaging              | Loose    | Legacy systems, enterprise integration               |
+| AMQP                 | Protocol          | Asynchronous  | Advanced message queuing               | Loose    | Enterprise reliability, cross-platform               |
+| Apache Camel         | Integration FW    | Both          | Complex routing, transformation        | Varies   | EIP patterns, multi-protocol integration             |
+
