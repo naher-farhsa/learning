@@ -1,0 +1,28 @@
+The langchain-core package provides these fundamental building blocks for all LangChain applications.
+
+Component	Use Case
+Callbacks	Enables hooking into the execution process to log events, track latency, or trigger side effects.
+Document Loaders	Imports raw data from various sources (files, web pages, databases) into document objects.
+Documents	Standard data structure containing text content and associated metadata for retrieval and processing.
+Embeddings	Transforms text into vector representations for semantic search and similarity matching.
+Example Selectors	Dynamically chooses relevant examples to include in prompts for few-shot learning.
+Indexing	Syncs your record-keeping systems (vector stores) with raw data to manage document upserts and deletions.
+Language Models	Standardizes the interface for interacting with various LLM providers (Chat or Completion).
+Messages	Represents the typed content (System, Human, AI) exchanged during LLM conversations.
+Output Parsers	Converts the unstructured output of a language model into structured formats like JSON or Pydantic.
+Outputs	Represents the generation results returned by an LLM, including metadata and tokens.
+Prompts	Manages templates that structure input queries for language models with variable injection.
+Runnables	Implements the standard LCEL interface (invoke, stream) for composable, chainable components.
+Tools	Wraps functional APIs with metadata, allowing models to selectively invoke external capabilities.
+Tracers	Records and exports execution traces to observability platforms like LangSmith for debugging.
+Vectorstores	Defines the interface for storing, indexing, and searching document embeddings.
+Agents	Orchestrates the execution loop where an LLM repeatedly decides which tools to call.
+Caches	Stores previous model responses to reduce latency and save costs on duplicate queries.
+Exceptions	Standardizes error definitions for unified handling across different components and integrations.
+Prompt Values	Internal representation of data before it is formatted as an input string or message list.
+Retrievers	Provides the abstraction for fetching relevant context from vector stores or search sources.
+Stores	Manages persistent key-value storage for shared state like chat history or session data.
+Structured Query	Constructs structured filters (e.g., metadata filters) from natural language input.
+Relevant docs:
+
+LangChain Core Library Reference

@@ -1,0 +1,105 @@
+// Online Java Compiler
+// Use this editor to write, compile and run your Java code online
+import java.util.stream.*;
+import java.util.*;
+class Main {
+    public static void main(String[] args) {
+
+
+//---------------------------------------------------------------------------------
+      
+     //1. Find even/odd/consonants from source
+     String s="hello";
+     List<Integer> l=Arrays.asList(12,4,5,6,93,51,0,97);
+     
+     List<Character> vl=s.chars()
+         .mapToObj(x->(char)x)
+         .filter(c->(c=='a'||c=='e'||c=='i'||c=='o'|| c=='u')?false:true)
+         .collect(Collectors.toList());
+         
+    String ns="";
+        for(char e:vl){
+       ns+=e+"";
+    }
+
+    List<Integer> el=l.stream()
+         .filter(x->x%2==0)
+         .collect(Collectors.toList());
+         
+    List<Integer> ol=l.stream()
+         .filter(x->x%2==1)
+         .collect(Collectors.toList());   
+    
+    System.out.println("new string -> "+ns);
+    System.out.println("even list -> "+el);
+    System.out.println("odd list -> "+ol);
+
+
+//---------------------------------------------------------------------------------
+
+    
+    // 2. min/max/sort aesc/desc order
+    List<Integer> l2=Arrays.asList(90,35,45,45,45,12,65,10,45,35,90,23);
+    
+    Optional<Integer> min=l2.stream()
+                        .reduce((a,b)->(a<b)?a:b);
+    Optional<Integer> max=l2.stream()
+                         .reduce((a,b)->(a>b)?a:b);
+                          
+     System.out.println("min -> "+min.get()+"\nmax -> "+max.get());
+     
+    List<Integer> ml=l2.stream()
+                      .distinct()
+                      .sorted((a,b)->a-b)
+                      .collect(Collectors.toList());
+         
+    
+     System.out.println("sorted -> "+ml);
+
+//---------------------------------------------------------------------------------
+
+     
+     // 3. second max
+    List<Integer> l3=Arrays.asList(90,35,45,45,45,12,65,10,45,35,90,23);
+
+    
+    List<Integer> sml=l3.stream()
+                      .distinct()
+                      .sorted((a,b)->b-a)
+                      .skip(1)
+                      .collect(Collectors.toList());
+     
+     System.out.println("secmax -> "+sml.get(0));
+    
+//---------------------------------------------------------------------------------
+
+    
+ //4. elements freq/ first repeat/first non-repeat/ highest repeat
+
+
+    List<Integer> l4=Arrays.asList(90,35,45,45,45,12,65,10,45,35,90,23);
+    
+    Map<Integer,Integer> freq=l4.stream()
+              .collect(Collectors.toMap(
+                  k->k,
+                  k->1,
+                  (u,v)->u+v));
+                  
+    System.out.println();             
+    for(int e:freq.keySet()){
+        System.out.println(e+" -> "+freq.get(e));
+    }
+    int fr,fnr;
+    for(int e:l4){
+        if(freq.get(e)>1) fr=e;
+        if(freq.get(e)==1) fnr=e;
+    }
+    
+    Optional<Integer> hr=freq.keySet()
+                .stream()
+                .reduce((a,b)->(freq.get(a)>freq.get(b))?a:b);
+    
+    System.out.println("highest repeat - "+hr.get()+" -> "+freq.get(hr.get()));
+  }
+}    
+                  
