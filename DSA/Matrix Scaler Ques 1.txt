@@ -1,0 +1,30 @@
+Subbox validation:
+1st row subbox-
+i:row, j:col
+i =0to2, j=0to2   } 1st subbox
+i =0to2, j=3to5   } 2nd subbox
+i =0to2, j=6to8   } 3rd subbox
+j==8 change i value
+
+2nd row subbox-
+i:row, j:col
+i =3to5, j=0to2   } 1st subbox
+i =3to5, j=3to5   } 2nd subbox
+i =3to5, j=6to8   } 3rd subbox
+
+j==8 change i value
+
+3rd row subbox-
+i:row, j:col
+i =6to8, j=0to2   } 1st subbox
+i =6to8, j=3to5   } 2nd subbox
+i =6to8, j=6to8   } 3rd subbox
+
+i==8  exit loop
+
+i=0to8  j=0to8 * 3
+
+
+
+
+

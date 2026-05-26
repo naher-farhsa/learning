@@ -1,0 +1,138 @@
+# 🧠 Unified Design Pattern Table
+
+| Pattern / Approach                 | Level       | Type    | Where it Fits                | Best Use Case                         |
+| ---------------------------------- | ----------- | ------- | ---------------------------- | ------------------------------------- |
+| **Application Logic (App Design)** | Application | Product | Defines overall app behaviour | Resume Analyzer, Chat app, RAG system |
+
+---
+
+## 🔷 System / Workflow Level
+
+| Pattern / Approach           | Level  | Type              | Where it Fits         | Best Use Case                 |
+| ---------------------------- | ------ | ----------------- | --------------------- | ----------------------------- |
+| Sequential (Pipeline)        | System | Workflow          | Fixed step execution  | Blog writing, ETL, RAG        |
+| Router (LLM / Rule)          | System | Control Flow      | Dynamic branching     | Multi-domain chatbot          |
+| Parallel                     | System | Optimization      | Concurrent execution  | Multi-retrieval, analytics    |
+| Generator (Divide & Conquer) | System | Decomposition     | Break large tasks     | Long reports, code generation |
+| Network (Collaborative)      | System | Multi-Agent       | Agent interaction     | Writer ↔ Critic loops         |
+| Autonomous System            | System | Multi-Agent       | Self-directed systems | Research agents (AutoGPT)     |
+| Single Agent + Tools         | System | Simplified System | Minimal architecture  | Most production LLM apps      |
+
+---
+
+## 🔷 Orchestration Level
+
+| Pattern / Approach            | Level         | Type          | Where it Fits            | Best Use Case             |
+| ----------------------------- | ------------- | ------------- | ------------------------ | ------------------------- |
+| Deterministic Orchestrator    | Orchestration | Control Logic | Code-driven flow         | Stable production systems |
+| LLM Supervisor (Router Agent) | Orchestration | AI Control    | Decides next step        | Dynamic workflows         |
+| Planner (Task Planner)        | Orchestration | Planning      | Generates execution plan | Complex multi-step tasks  |
+| Event-driven Orchestration    | Orchestration | Reactive      | Trigger-based flow       | Async systems, pipelines  |
+
+---
+
+## 🔷 Agent Level
+
+| Pattern / Approach       | Level | Type                 | Where it Fits           | Best Use Case        |
+| ------------------------ | ----- | -------------------- | ----------------------- | -------------------- |
+| ReAct (Reason + Act)     | Agent | Reasoning + Tools    | Tool-using agents       | Search, debugging    |
+| Plan-and-Execute         | Agent | Structured Reasoning | Step-based execution    | Reports, workflows   |
+| Function Calling Agent   | Agent | API Execution        | Direct tool usage       | DB queries, APIs     |
+| Self-Reflection (Critic) | Agent | Evaluation           | Output refinement       | Writing, code review |
+| Tree of Thoughts (ToT)   | Agent | Deep Reasoning       | Multi-path thinking     | Strategy, math       |
+| Reflexion                | Agent | Learning Loop        | Trial-error improvement | Code fixing          |
+| Memory-Augmented Agent   | Agent | Context-aware        | Uses past memory        | Chatbots             |
+
+---
+
+## 🔷 Tool Level
+
+| Pattern / Approach           | Level | Type             | Where it Fits     | Best Use Case       |
+| ---------------------------- | ----- | ---------------- | ----------------- | ------------------- |
+| Tool / Command Pattern       | Tool  | Action Execution | Callable tools    | APIs, file ops      |
+| External APIs (Search, DB)   | Tool  | Integration      | Data access       | RAG, real-time info |
+| Code Execution (Python REPL) | Tool  | Computation      | Dynamic execution | Charts, analysis    |
+
+---
+
+## 🔷 Control / Governance Level
+
+| Pattern / Approach         | Level   | Type        | Where it Fits        | Best Use Case       |
+| -------------------------- | ------- | ----------- | -------------------- | ------------------- |
+| Human-in-the-Loop (HITL)   | Control | Validation  | Human approval layer | Critical outputs    |
+| Approval Gate              | Control | Validation  | Final checkpoint     | Publishing, finance |
+| Interrupt / Escalation     | Control | Fallback    | Ask human when stuck | Support systems     |
+| Feedback Loop              | Control | Improvement | Iterative refinement | Quality systems     |
+| Guardrails (Rules/Filters) | Control | Safety      | Restrict outputs     | Moderation          |
+
+---
+
+## 🔷 Memory Level
+
+| Pattern / Approach           | Level  | Type      | Where it Fits        | Best Use Case       |
+| ---------------------------- | ------ | --------- | -------------------- | ------------------- |
+| Short-term Memory (State)    | Memory | Context   | Current conversation | LangGraph state     |
+| Long-term Memory (Vector DB) | Memory | Retrieval | Persistent knowledge | RAG systems         |
+| Episodic Memory              | Memory | History   | Past interactions    | Personal assistants |
+| Semantic Memory              | Memory | Knowledge | Structured facts     | Knowledge bases     |
+
+---
+
+# 🔥 How to Actually Use This (Real Insight)
+
+### ✅ Minimal production-ready stack
+
+```text
+Application
+→ Sequential System
+→ Deterministic Orchestrator
+→ ReAct Agent
+→ Tools
+→ (Optional HITL)
+```
+
+---
+
+### ✅ Advanced but stable
+
+```text
+Application
+→ Router + Sequential Hybrid
+→ Planner Orchestrator
+→ Plan-Execute Agents
+→ Tools
+→ Critic + HITL
+→ Memory (RAG)
+```
+
+---
+
+### ❌ What you built earlier (why it failed)
+
+```text
+Autonomous System
+→ LLM Supervisor
+→ ReAct Agents
+→ No Control Layer
+```
+
+👉 Multiple “brains” → loops + confusion
+
+---
+
+# ⚡ Final Mental Model
+
+* **Application** → Why
+* **System** → Flow
+* **Orchestrator** → Who decides next
+* **Agent** → How task is solved
+* **Tools** → What actions are possible
+* **Control** → Safety & trust
+* **Memory** → Context
+
+---
+
+If you want next step, I can:
+
+* Map your **LangGraph code → each level (line by line)**
+* OR redesign your system into a **perfect interview-ready architecture**

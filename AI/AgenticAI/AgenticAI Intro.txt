@@ -1,0 +1,136 @@
+GenAI: Fields of AI models that can create new content - such as text, images, audio, video or code in natural language (human-like data).
+
+Technologies:
+- LLM Apps: ChatGPT
+- Diffusion models (Image): MidJourney
+- Codi models: CodeLLama
+- Text-to-Speech models: Eleven Labs v3
+- Video gen models: Sora
+
+Traditional AI: About finding patterns in data and giving predictions.                  
+
+Generative AI: About learning distribution of data so that it can generate a new sample from it with human like response. 
+
+Agentic AI: About creating system that use LLM as "reasoning engine" and tools as "action items" to achieve specific goals. It can reason, plan and take action.
+
++--------------+-------------+-----------+------------+------------+-----------+
+| FEATURE      | TRADITIONAL | GEN AI    | GEN AI     | GEN AI +   | AGENTIC   |
+|              | AI          | (LLM)     | + RAG      | RAG + TOOL | AI        |
++--------------+-------------+-----------+------------+------------+-----------+
+| CONTEXT      | None        | General   | Specific   | Specific   | Dynamic   |
+|              | (Static)    | (Global)  | (Private)  | (Private)  | (Goal)    |
++--------------+-------------+-----------+------------+------------+-----------+
+| MEMORY       | None        | Training  | Retrieval  | Retrieval  | Long-term |
+|              |             | Only      | (External) | + State    | + History |
++--------------+-------------+-----------+------------+------------+-----------+
+| REASONING    | Statistical | Linguistic| Fact-based | Logical    | Recursive |
+|              | (Patterns)  | (Syntax)  | (Context)  | (Steps)    | (Planning)|
++--------------+-------------+-----------+------------+------------+-----------+
+| ACTION       | None        | Text      | Text       | API Calls  | Multi-step|
+|              |             | Output    | Output     | (Limited)  | Execution |
++--------------+-------------+-----------+------------+------------+-----------+
+| ADAPTABILITY | Zero        | Low       | Medium     | Medium     | High      |
+|              | (Retrain)   | (Prompt)  | (Data)     | (Hardcode) | (Self-Fix)|
++--------------+-------------+-----------+------------+------------+-----------+
+
+Transition from Traditional to Agentic AI
+ 
+[ STAGE 1: TRADITIONAL AI ]
+      |
+      |-- Keyword: PREDICTION
+      |-- Role: The Classifier
+      |-- Example: Sorting tickets into "Billing" or "Tech Support"
+      |
+[ 🛑 PROBLEM ]: RIGID, REACTIVE 
+      |         It can label a problem but can't "talk" or solve it.
+      |
+      |
+      |
+      V
+[ STAGE 2: GENERATIVE AI (LLM) ] 
+      |
+      |-- Keyword: GENERATION
+      |-- Role: The Knowledge Base
+      |-- Example: Chatbot answers product questions from training data
+      |
+      V
+[ 🛑 PROBLEM ]: HALLUCINATIONS & STALE DATA.       
+      |          It makes things up and doesn't know your specific account.
+      |              
+      |
+      |
+      V                                                
+[ STAGE 3: GEN AI + RAG ] 
+      |
+      |-- Keyword: CONTEXT
+      |-- Role: The Researcher
+      |-- Example: Bot reads your specific "User Manual.pdf" to answer
+      |
+      V
+[ 🛑 PROBLEM ]: PASSIVE READ-ONLY. 
+      |          It can tell you "how" to cancel, but it can't "do" it.
+      |
+      |            
+      |
+      |
+      V                       
+[ STAGE 4: AGENTIC AI ]       
+      |-- Keyword: ACTION & REASONING
+      |-- Role: The Executor
+      |-- Example: Bot reasons: "User is angry -> Check refund policy 
+      |            -> Execute Refund API -> Send Confirmation Email"
+      |
+      V
+[ ✅ SOLUTION ]: AUTONOMOUS GOAL COMPLETION.
+                 It plans, uses tools, and fixes its own mistakes.
+
+
+Characteristics of Agentic AI:
+- Autonomy:  Execution, Decision making(HITL), Tool Usage
+- Goal Oriented: Objective into Action with constraint
+- Planning: Break down high-level goal into structured sequence of actions
+- Reasoning: Cognitive process to interpret info, make decision, conclusion 
+- Adaptability: Modify plans, strategy and action for unexpected condition
+- Context Awareness: Understand, retain and utilize relevant info(STM, LTM)
+
+Components of Agentic AI:
+1) Brain (LLM): 
+   - Goal Interpretation
+   - Planning
+   - Reasoning
+   - Tool Selection
+   - Communication
+
+2) Orchestrator (Langgraph): 
+   - Task Sequencing
+   - Conditional routing
+   - Retry logic
+   - Looping
+   - Delegation
+
+3) Tools:
+   - External Actions
+   - Knowledge Base Access
+
+4) Memory: 
+   - Short Term Memory
+   - Long Term Memory
+   - State Tracking
+
+5) Supervisor:
+   - Approval Requests (HITL)
+   - Guardrails Enforcement
+   - Edge Case Escalation
+
+
++----------------+--------------------------+---------------------------+
+| FEATURE        | LANGCHAIN (LCEL)         | LANGGRAPH                 |
++----------------+--------------------------+---------------------------+
+| FLOW PATTERN   | Linear / Branching (DAG) | Cyclic (Loops allowed)    |
++----------------+--------------------------+---------------------------+
+| STATE          | Stateless by default     | Stateful by design        |
++----------------+--------------------------+---------------------------+
+| RETRY LOGIC    | Difficult / Hardcoded    | Native via Edge Routing   |
++----------------+--------------------------+---------------------------+
+| HUMAN APPROVAL | Not natively supported   | Built-in "Breakpoints"    |
++----------------+--------------------------+---------------------------+

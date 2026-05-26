@@ -1,0 +1,162 @@
+LangGraph: 
+Its orchestration framework for building intelligent, stateful and multistep LLM workflows. It models workflows as graph, task-steps as nodes and routing as edges instead of linear chain.
+
+Feature: 
+- Parallelism: Runs multiple tasks at the exact same time. 
+- Loops: Iterate steps until a job is completely finished.
+- Branching: Chooses different paths based on current answers.
+- Memory: Remembers information from start to finish. 
+- Resumability: Pauses the work and restarts exactly where it stopped.
+
+____________________________________________________________________________________________________________________________
+
+LangGraph Execution Model:
+
+LangGraph execution model is inspired from Google's Pregel
+1) Graph Definition: Define State Schema, Nodes, Edges. Uses StateGraph(state), add_node(), add_edge()
+2) Compilation: Checks graph structure for execution. Uses .compile() on StateGraph
+3) Invocation: Run graph and sends initial state as a message to entry nodes. Uses .invoke(initial_state)
+4) Super-state begin: Execution proceeds in rounds.
+____________________________________________________________________________________________________________________________
+
+LLM Workflows: 
+Step by step process in complex LLM app involved to complete a goal/task. Each step maps to distinct task (prompting, reasoning, tool calling, memory access, decision-making).
+
+Types:
+- Prompt Chaining: Linear workflow where the output of one LLM call serves as the direct input for the next
+
+- Parallel: Workflow where multiple LLMs work on different parts of a task simultaneously to save time, with their results merged at the end via "Reducers" and "Partial State Returns"
+
+- Routing: Workflow that uses a "router" (gate) either LLM or rules based to classify an input and direct it to the most appropriate specialized LLM or path 
+
+- Orchestrator: Workflow where a "manager" LLM breaks down a large task, delegates sub-tasks to worker LLMs, and synthesizes the final result in a "structured manner/ static autonomy"
+
+- Supervisor: Same as "Orchestrator" but in dynamic automony. 
+
+- Evaluator-Optimizer: Iterative workflow where one LLM generates a response and another provides feedback for refinement until a quality threshold is met
+
+
+Workflow     --------->   LLM Workflow (Actual)
+Sequential   --------->   Prompt Chaining
+Parallel     --------->   Parallelization
+Conditional  --------->   Routing
+Iterative    --------->   Evaluator-Optimizer
+Orchestrator --------->   Orchestrator
+
+
+Graph State: A central data model or schema defined for your system, acting as a shared memory space. Every task or node in the graph reads from and writes updates to this single state to keep data synchronized.
+
+Workflow State: Tracks the overall execution lifecycle, progress, and historical trail of a specific run. It captures snapshots of the graph state at various intervals/Super-Steps, allowing you to pause for human input, handle failures, or travel back in time to debug.
+
+_______________________________________________________________________________________________________________________
+
+Autonomy: 
+Degree of independence an agent has to make its own decisions, choose its own actions, and solve problems without human intervention or rigid, pre-programmed rules.
+
+- Level 0 (Code): Zero autonomy where everything is hard-coded, predictable, and cannot handle real-life unpredictability.
+
+- Level 1 (Single LLM Call): Takes a single input and generates a single output, making it better than rigid code but easily overwhelmed by complex tasks.
+
+- Level 2 (Chains): Connects multiple specialized LLMs together in a fixed, one-directional assembly line designed entirely by humans.
+
+- Level 3 (Router): Uses an LLM as a traffic cop to dynamically choose which path or tool to take based on user input, but still flows only one way.
+
+- Level 4 (State Machine / Agent): Introduces loops and memory (via frameworks like LangGraph), allowing the AI to autonomously critique, correct, and rerun its own steps.
+
+- Level 5 (Autonomous Agents): Fully independent systems where the AI determines the goals, the steps, and even discovers the tools needed on its own, though the technology is not fully mature yet.
+
+
++----------------------+--------------------+--------------------+--------------------+-----------------------+
+| Autonomy Level       | Who Does the Work? | Who Picks Next?    | Who Sets Rules?    | Dynamic Flow Style    |
++----------------------+--------------------+--------------------+--------------------+-----------------------+
+| 1. Code              | Human              | Human              | Human              | Rigid & Unchanging    |
+| 2. LLM Call          | AI                 | Human              | Human              | One-and-Done          |
+| 3. Chains            | AI                 | Human              | Human              | Fixed Assembly Line   |
+| 4. Router            | AI                 | AI & Human         | Human              | Smart Traffic Cop     |
+| 5. State Machine     | AI                 | AI                 | Human              | Learning Loops        |
+| 6. Autonomous Agent  | AI                 | AI                 | AI                 | Completely On Its Own |
++----------------------+--------------------+--------------------+--------------------+-----------------------+
+_______________________________________________________________________________________________________________
+
+Components:
+
+--------------------------------------------------Graph API----------------------------------------------------
+
+0) Graph: Declarative way to build complex, stateful agent workflows by explicitly defining nodes, edges, and shared state (Uses StateGraph) while Functional API allows for more procedural, Python-like control flow standard (Uses @entrypoint and @task). Both APIs can be used in same application, as they share the same underlying LangGraph runtime.
+
+1) State: A data structure acts shared memory (often a TypedDict or Pydantic model) that flows and mutate throughout the lifetime of the graph execution.
+
+Reducers: Define how updates from nodes are applied to the shared state (default, add).
+
+MessageState: Prebuilt LangGraph Structure used to work with messages(AI, Human, Tool) list. It is defined with a single messages key which is a list of AnyMessage objects and uses the add_messages as reducer.
+
+2) Nodes: Python functions/LLM/Tool Calls that represent a unit of work. Nodes read and update the "State"
+
+3) Edges: The connections between nodes that define the control flow. (add_edge())
+   - Conditional Edges: Route execution flow to next node based on the output of previous node. (add_conditional_edge())
+   - Send():
+   - Command():
+     - update
+     - goto
+     - graph
+     - resume
+   - START/END: Special anchors that define the entry and exit points of your graph.
+
+----------------------------------------------------Graph API-------------------------------------------------
+
+4) Checkpointer: Persistence implementation for agent, essentially maintains a list (or time-series history) of graph states as "StateSnapshot", indexed by every super-step of that specific graph/workflow.
+
+Persistence: Ability to save and restore the state of a graph overtime.
+Thread Id: Unique ID assigned to each checkpoint saved by a Checkpointer, used to fetch accumulated sequential graph state history.
+Config: 
+  
+Feature of Persistence: 
+- Short-Term Memory (STM): Retains context and conversational data within single user thread so chatbot remembers immediate conversation. Implemented by creating a "checkpointer" and configured with "thread_id" for session to automatically track message history inside graph state.
+
+- Resume / Fault Tolerance: Interconnected features comes from "STM" preserving state data across sessions or system failures to prevent data loss. Implementated by creating "checkpointer" and configured with "thread_id" to load existing state history, and passing input state as None (workflow.invoke(None, config)) to resume execution exactly from last saved checkpoint.
+
+- Human In The Loop: Pauses workflow execution to wait for manual human approval, state modification, or feedback. Implemented by configuring/adding "interrupt_before" or "interrupt_after" flags on specific graph nodes to automatically halt execution.
+
+- Time Travel: Enables navigating back to past execution states to debug, fork, or alter path. Implemented by fetching specific past state with its "checkpoint_id" from  "get_state_history()" and passes as (workflow.invoke(None/input_state, config(thread_id,checkpoint_id)) to rerun or update state from exact historical moment.
+
+5) Streaming: Model start sending tokens(words) as soon as they're generated, instead of waiting for the entire response to be ready before returning it.
+Inspired by Python generators because its .stream() method returns a generator object that continually yields message chunks on the fly as they are created, rather than waiting to return the final response all at once.
+
+Streaming modes:
+Pass one or more of the following stream modes as a list to the stream or astream methods:
+Mode	        Type	                Description
+values      	ValuesStreamPart	Full state after each step.
+updates	        UpdatesStreamPart	State updates after each step. Multiple updates in the same step are streamed separately.
+messages	MessagesStreamPart	2-tuples of (LLM token, metadata) from LLM calls.
+custom	        CustomStreamPart	Custom data emitted from nodes via get_stream_writer.
+checkpoints	CheckpointStreamPart	Checkpoint events (same format as get_state()). Requires a checkpointer.
+tasks	        TasksStreamPart  	Task start/finish events with results and errors. Requires a checkpointer.
+debug	        DebugStreamPart	        All available info — combines checkpoints and tasks with extra metadata.
+
+Each stream mode has a corresponding TypedDict containing ValuesStreamPart, UpdatesStreamPart, MessagesStreamPart, CustomStreamPart, CheckpointStreamPart, TasksStreamPart, DebugStreamPart. You can import these types from langgraph.types. The union type StreamPart is a disjoing union on part["type"], enabling full type narrowing in editors and type checkers.
+
+Pros:
+- Faster response time - low drop off rates
+- Mimics human like conversation
+- Important for multi-modal UIs
+- Better UX for long output such as code
+- Can cancel/abort midway saving tokens
+- Can interleave UI updates, eg: "thinking..."
+
+Event Streaming:
+
+
+6) Fault Tolerance: When a node fails—from a slow external API, a transient network error, or an unhandled exception—LangGraph gives you three composable mechanisms to respond:
+ 
+- Retries: automatically re-run failed attempts based on exception type and backoff settings. Implemented by passing retry_policy= to add_node  "retry_policy=RetryPolicy(max_attempts=3)" to "add_node"
+
+- Timeouts: cap how long a single attempt may run. Implemented passing number (seconds), a timedelta=, or a TimeoutPolicy= for separate run and idle limits "timeout=TimeoutPolicy(run_timeout=120, idle_timeout=30)
+ 
+- Error handling: run a recovery function after all retries are exhausted. It receives the current state and can update it or route to a different node using Command. Implemented by passing error_handler= to add_node.  "error_handler=payment_error_handler"
+payment_error_handler func:
+return Command( update={"status": f"compensated: {error.error}"}, goto="finalize",) 
+
+
+_______________________________________________________________________________________________________
+
+
