@@ -8,15 +8,26 @@ Feature:
 - Memory: Remembers information from start to finish. 
 - Resumability: Pauses the work and restarts exactly where it stopped.
 
+When to use LangChain:
+- Simple, linear workflows(Prompt Chaining,LCEL)
+- Components(Models, PromptTemplate, Retrievers, DocumentLoaders, Tools)
+
+When to use LangGraph:
+- Complex, non-linear workflows
+- Control Flow Complexity (Branching,Iterating)
+- State Handling (Data Transfer)
+- Event Driven Execution (Interrupts, HITL)
+- Fault Tolerance (Resume, Time Travel)
+- Nested Workflows (Sub-Graphs)
 ____________________________________________________________________________________________________________________________
 
 LangGraph Execution Model:
 
 LangGraph execution model is inspired from Google's Pregel
-1) Graph Definition: Define State Schema, Nodes, Edges. Uses StateGraph(state), add_node(), add_edge()
-2) Compilation: Checks graph structure for execution. Uses .compile() on StateGraph
-3) Invocation: Run graph and sends initial state as a message to entry nodes. Uses .invoke(initial_state)
-4) Super-state begin: Execution proceeds in rounds.
+- Step-1 (Graph Definition): Define State Schema, Nodes, Edges. Uses StateGraph(state), add_node(), add_edge()
+- Step-2 (Compilation): Checks graph structure for execution. Uses .compile() on StateGraph
+- Step-3 (Invocation): Run graph and sends initial state as a message to entry nodes. Uses .invoke(initial_state)
+- Step-4 (Super-state begin): Execution proceeds in rounds.
 ____________________________________________________________________________________________________________________________
 
 LLM Workflows: 
@@ -86,29 +97,52 @@ Components:
 
 1) State: A data structure acts shared memory (often a TypedDict or Pydantic model) that flows and mutate throughout the lifetime of the graph execution.
 
-Reducers: Define how updates from nodes are applied to the shared state (default, add).
+- Reducers: Define how updates from nodes are applied to the shared state (default, add).
 
-MessageState: Prebuilt LangGraph Structure used to work with messages(AI, Human, Tool) list. It is defined with a single messages key which is a list of AnyMessage objects and uses the add_messages as reducer.
+- MessageState: Prebuilt LangGraph (TypeDict) Structure used to work with messages(AI, Human, Tool) list. It is defined with a single messages key which is a list of AnyMessage objects and uses the add_messages as reducer.
 
-2) Nodes: Python functions/LLM/Tool Calls that represent a unit of work. Nodes read and update the "State"
+- AgentState: Inherits "MessageState" extend with custom key (user_info, internal_notes, documents, next_step, remaining_steps, is_approved) alongside the default "messages" history to track agent-specific context. Designed natively for conversational agents.It extends basic message tracking, allowing you to easily a 
 
-3) Edges: The connections between nodes that define the control flow. (add_edge())
-   - Conditional Edges: Route execution flow to next node based on the output of previous node. (add_conditional_edge())
-   - Send():
-   - Command():
-     - update
-     - goto
-     - graph
-     - resume
-   - START/END: Special anchors that define the entry and exit points of your graph.
+2) Nodes: Python functions/LLM/Tool Calls that represent a unit of work. Nodes read and update the "State".
+
+- ToolNode: A pre-built node that acts as a automatically executes the tools requested by an LLM. It looks at the last message in the state, detects if the LLM made a "tool_calls" request, route and runs correct tool, and appends "tool_output" in ToolMessage(s) back to the graph state. 
+
+
+- tools_condition: Pre-built conditional-edge function (ReAct style), it looks at very last message in chat history. If AIMessage has "tool_calls" request it return "tools", If not then "__end__"
+
+ - tool_calls: A hidden list/array attached to an AIMessage, LLM doesn't execute the tool itself. Instead, it stops generating regular text and outputs a structured request. (name:tool_name, args:LLM generated tool_input, id:LLM generated tool_id)
+
+- ToolMessages: A BaseMessage subclass used only to store the output of a tool execution.(content- raw-text/JSON/String tool output, tool_call_id-tool_id, tool_calls-Query-Response mapping)
+
+
+3) Edges: The connections between nodes that define the control flow. (add_edge("node_a","node_b"))
+
+- Conditional Edges: Route execution flow to next node based on the output of previous node. (add_conditional_edge("start_node",routing_function)). "routing_function" inspects the current State and returns a string matching the next node's name.
+
+Advanced Conditional Routing Actions (Inside Nodes/Routers):
+
+- Send(): Used to achieve parallel execution (Map-Reduce). It allows a node to spawn multiple instances of another node simultaneously, passing a unique sub-state to each instance (e.g., sending 5 different search queries to 5 parallel tool nodes).
+
+- Command(): A unified control object returned by a node to update the state (GraphState) and change the control flow (next node) at the same time, without needing (bypassing) a separate conditional edge.
+     - update: Modifies or appends data to the shared Graph State inline.
+     - goto: Specifies the exact next node to execute immediately (bypass normal edge)
+     - graph: Sub-graph control (used to invoke or steer nested graphs).
+     - resume: Used in HITL workflows to pass user inputs or approval data back into a graph that was previously paused by an interrupt.
+
+- START/END: Special anchors that define the entry and exit points of your graph.
 
 ----------------------------------------------------Graph API-------------------------------------------------
 
 4) Checkpointer: Persistence implementation for agent, essentially maintains a list (or time-series history) of graph states as "StateSnapshot", indexed by every super-step of that specific graph/workflow.
 
-Persistence: Ability to save and restore the state of a graph overtime.
-Thread Id: Unique ID assigned to each checkpoint saved by a Checkpointer, used to fetch accumulated sequential graph state history.
-Config: 
+- Persistence: Ability to save and restore the state of a graph overtime.
+
+- Thread Id: Unique ID assigned to each checkpoint saved by a Checkpointer, used to fetch accumulated sequential graph state history.
+
+- Config: Python Dict for adding metadata (thread_id, checkpoint_id, model_name) that controls how the runtime executes that specific instance. Passed in (invoke(), stream(), update_State()).
+
+get_state(): Returns the last stored StateSnapshot
+get_state_history(): Returns the entire stored StateSnapshot
   
 Feature of Persistence: 
 - Short-Term Memory (STM): Retains context and conversational data within single user thread so chatbot remembers immediate conversation. Implemented by creating a "checkpointer" and configured with "thread_id" for session to automatically track message history inside graph state.
@@ -117,23 +151,29 @@ Feature of Persistence:
 
 - Human In The Loop: Pauses workflow execution to wait for manual human approval, state modification, or feedback. Implemented by configuring/adding "interrupt_before" or "interrupt_after" flags on specific graph nodes to automatically halt execution.
 
-- Time Travel: Enables navigating back to past execution states to debug, fork, or alter path. Implemented by fetching specific past state with its "checkpoint_id" from  "get_state_history()" and passes as (workflow.invoke(None/input_state, config(thread_id,checkpoint_id)) to rerun or update state from exact historical moment.
+- Time Travel: Enables navigating back to past execution states to debug, fork, or alter path. Implemented by fetching specific past state with its "checkpoint_id" from  "get_state_history()" and passes as (workflow.invoke(None/input_state, config(thread_id,checkpoint_id)) to rerun or update state from exact historical moment "update_state(config,input state)" .
 
-5) Streaming: Model start sending tokens(words) as soon as they're generated, instead of waiting for the entire response to be ready before returning it.
+6) Streaming: Model start sending tokens(words) as soon as they're generated, instead of waiting for the entire response to be ready before returning it.
 Inspired by Python generators because its .stream() method returns a generator object that continually yields message chunks on the fly as they are created, rather than waiting to return the final response all at once.
 
 Streaming modes:
 Pass one or more of the following stream modes as a list to the stream or astream methods:
-Mode	        Type	                Description
-values      	ValuesStreamPart	Full state after each step.
-updates	        UpdatesStreamPart	State updates after each step. Multiple updates in the same step are streamed separately.
-messages	MessagesStreamPart	2-tuples of (LLM token, metadata) from LLM calls.
-custom	        CustomStreamPart	Custom data emitted from nodes via get_stream_writer.
-checkpoints	CheckpointStreamPart	Checkpoint events (same format as get_state()). Requires a checkpointer.
-tasks	        TasksStreamPart  	Task start/finish events with results and errors. Requires a checkpointer.
-debug	        DebugStreamPart	        All available info — combines checkpoints and tasks with extra metadata.
+               Mode	     Type	            Description
 
-Each stream mode has a corresponding TypedDict containing ValuesStreamPart, UpdatesStreamPart, MessagesStreamPart, CustomStreamPart, CheckpointStreamPart, TasksStreamPart, DebugStreamPart. You can import these types from langgraph.types. The union type StreamPart is a disjoing union on part["type"], enabling full type narrowing in editors and type checkers.
+Graph State:   values        ValuesStreamPart	    Full state after each step.
+               updates       UpdatesStreamPart	    State updates after each step. Multiple updates in the same step are streamed separately.
+ 
+LLM Tokens:    messages      MessagesStreamPart	    2-tuples of (LLM token, metadata) from LLM calls.
+
+Custom:        custom	     CustomStreamPart	    Custom data emitted from nodes via get_stream_writer.
+         
+CheckPoint:    checkpoints   CheckpointStreamPart   Checkpoint events (same format as get_state()). Requires a checkpointer.
+
+Info:          tasks	     TasksStreamPart        Task start/finish events with results and errors. Requires a checkpointer.
+               debug	     DebugStreamPart	    All available info — combines checkpoints and tasks with extra metadata.
+
+Each stream mode has a corresponding TypedDict containing ValuesStreamPart, UpdatesStreamPart, MessagesStreamPart, CustomStreamPart, CheckpointStreamPart, TasksStreamPart, DebugStreamPart. You can import these types from langgraph.types. The union type StreamPart is a disjoing union on part["type"], enabling full type narrowing in editors and type checkers. 
+
 
 Pros:
 - Faster response time - low drop off rates
@@ -146,7 +186,7 @@ Pros:
 Event Streaming:
 
 
-6) Fault Tolerance: When a node fails—from a slow external API, a transient network error, or an unhandled exception—LangGraph gives you three composable mechanisms to respond:
+7) Fault Tolerance: When a node fails—from a slow external API, a transient network error, or an unhandled exception—LangGraph gives you three composable mechanisms to respond:
  
 - Retries: automatically re-run failed attempts based on exception type and backoff settings. Implemented by passing retry_policy= to add_node  "retry_policy=RetryPolicy(max_attempts=3)" to "add_node"
 

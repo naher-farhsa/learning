@@ -1,0 +1,88 @@
+AI
+├── Traditional AI / ML ──┬── Classification Models
+│                         ├── Recommendation Systems
+│                         ├── Forecasting Models
+│                         └── Computer Vision Models
+│
+├── NLP / Language AI ───┬── Text Classification
+│                        ├── Sentiment Analysis
+│                        ├── Entity Extraction
+│                        ├── Translation
+│                        ├── Summarization
+│                        └── Conversational AI ──┬── Rule-based Chatbot
+│                                                ├── FAQ Chatbot
+│                                                ├── Voice Bot
+│                                                ├── Customer Support Bot
+│                                                ├── AI Assistant
+│                                                └── LLM-based Chatbot
+│
+└── Generative AI / GenAI ──┬── Text Generation  ──┬── Blog / Article Generation
+                            │                      ├── Email Generation
+                            │                      ├── Code Generation
+                            │                      └── Report Generation
+                            │
+                            ├── Image / Audio / Video Generation ──┬── Image Generation
+                            │                                      ├── Voice Generation
+                            │                                      ├── Music Generation
+                            │                                      └── Video Generation
+                            │
+                            ├── LLM Applications ──┬── Prompt-based Apps
+                            │                      │
+                            │                      ├── RAG Apps ───┬── Document Q&A
+                            │                      │               ├── Chat with PDF
+                            │                      │               ├── Knowledge-base Chatbot
+                            │                      │               └── Enterprise Search
+                            │                      │
+                            │                      ├── Conversational AI Apps ──┬── Chatbot
+                            │                      │                            ├── Support Assistant
+                            │                      │                            ├── Voice Assistant
+                            │                      │                            └── Sales / HR / IT Assistant
+                            │                      │
+                            │                      ├── Copilot Apps ──┬── Coding Copilot
+                            │                      │                  ├── Document Copilot
+                            │                      │                  ├── Email Copilot
+                            │                      │                  └── Data Analysis Copilot
+                            │                      │
+                            │                      ├── AI Workflow Apps ──┬── Sequential Workflow
+                            │                      │                      ├── Router Workflow
+                            │                      │                      ├── Human-in-the-loop Workflow
+                            │                      │                      └── Review / Approval Workflow
+                            │                      │
+                            │                      └── Agentic AI ─┬─ Single Agent ──┬── Tool-using Agent
+                            │                                      │                 ├── ReAct Agent
+                            │                                      │                 ├── Planning Agent
+                            │                                      │                 ├── Reflection Agent
+                            │                                      │                 └── Autonomous Task Agent
+                            │                                      │
+                            │                                      ├── Multi-Agent System ──┬── Supervisor-agent Pattern
+                            │                                      │                        ├── Researcher + Writer Agents
+                            │                                      │                        ├── Planner + Executor Agents
+                            │                                      │                        ├── Critic + Improver Agents
+                            │                                      │                        └── Agent Collaboration Workflow
+                            │                                      │
+                            │                                      └── Agentic RAG  ──┬── Query Rewriting
+                            │                                                         ├── Tool-based Retrieval
+                            │                                                         ├── Multi-step Research
+                            │                                                         ├── Source Validation
+                            │                                                         └── Self-correcting Retrieval
+                            │
+                            ├── Multimodal AI ──┬── Text + Image
+                            │                   ├── Text + Audio
+                            │                   ├── Text + Video
+                            │                   ├── Document Understanding
+                            │                   └── Vision-language Models
+                            │
+                            ├── Model Customization ──┬── Prompt Engineering
+                            │                         ├── Few-shot Prompting
+                            │                         ├── RAG
+                            │                         ├── Fine-tuning
+                            │                         ├── LoRA / PEFT
+                            │                         └── RLHF / Preference Tuning
+                            │
+                            └── LLMOps / GenAIOps ───┬── Prompt Versioning
+                                                     ├── Evaluation
+                                                     ├── Guardrails
+                                                     ├── Monitoring
+                                                     ├── Tracing
+                                                     ├── Cost Optimization
+                                                     └── Deployment

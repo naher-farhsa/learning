@@ -34,6 +34,8 @@ Functional Interface
 - get()     (Supplier) 
 - test()    (Predicate)
 - apply()   (Function) 
+- run()     (Runnable)
+- call()    (Callable)
 - compare() (Comparator : Not a Functional Interfaces)
 
 Stream Api imp method
@@ -43,8 +45,8 @@ Starter:
 - Stream.of()
 
 Intermediate (lazy): 
-- map()      -> (apply() - Funtion)
-- filter()   ->(test() - Prediacate)
+- map()      -> (apply() - Function)
+- filter()   ->(test() - Predicate)
 - distinct() ->(Object.hashCode() / Object.equals())
 - sorted()   -> (compare() - Comparator/ compareTo() - Comparable)
 

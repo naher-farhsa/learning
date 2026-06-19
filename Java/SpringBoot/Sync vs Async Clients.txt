@@ -17,7 +17,7 @@ FeignClient can be configured to use WebClient for async behavior
 
 | Tool/Protocol        | Type              | Sync/Async    | Use Case                               | Coupling | Best For                                             |
 |----------------------|-------------------|---------------|----------------------------------------|----------|--------------------------------------------
-| REST + FeignClient   | HTTP              | Synchronous   | Inter-service direct calls             | Tight    | Simple microservices, for instant response   |
+| REST + FeignClient   | HTTP              | Synchronous   | Inter-service direct calls             | Tight    | Simple microservices, for instant response           |
 | WebClient            | HTTP              | Asynchronous  | Non-blocking inter-service calls       | Tight    | Reactive systems, high throughput                    |
 | gRPC                 | HTTP/2            | Synchronous   | High-performance inter-service         | Tight    | Real-time, low latency needs                         |
 | Kafka                | Message Queue     | Asynchronous  | Event-driven, async processing         | Loose    | Multi consumers, event stream, decoupling
