@@ -1,13 +1,6 @@
 LangGraph: 
 Its orchestration framework for building intelligent, stateful and multistep LLM workflows. It models workflows as graph, task-steps as nodes and routing as edges instead of linear chain.
 
-Feature: 
-- Parallelism: Runs multiple tasks at the exact same time. 
-- Loops: Iterate steps until a job is completely finished.
-- Branching: Chooses different paths based on current answers.
-- Memory: Remembers information from start to finish. 
-- Resumability: Pauses the work and restarts exactly where it stopped.
-
 When to use LangChain:
 - Simple, linear workflows(Prompt Chaining,LCEL)
 - Components(Models, PromptTemplate, Retrievers, DocumentLoaders, Tools)
@@ -19,6 +12,14 @@ When to use LangGraph:
 - Event Driven Execution (Interrupts, HITL)
 - Fault Tolerance (Resume, Time Travel)
 - Nested Workflows (Sub-Graphs)
+
+Benefits: 
+- Parallelism: Runs multiple tasks at the exact same time. 
+- Loops: Iterate steps until a job is completely finished.
+- Branching: Chooses different paths based on current answers.
+- Memory: Remembers information from start to finish. 
+- Resumability: Pauses the work and restarts exactly where it stopped.
+
 ____________________________________________________________________________________________________________________________
 
 LangGraph Execution Model:
@@ -93,7 +94,9 @@ Components:
 
 --------------------------------------------------Graph API----------------------------------------------------
 
+
 0) Graph: Declarative way to build complex, stateful agent workflows by explicitly defining nodes, edges, and shared state (Uses StateGraph) while Functional API allows for more procedural, Python-like control flow standard (Uses @entrypoint and @task). Both APIs can be used in same application, as they share the same underlying LangGraph runtime.
+
 
 1) State: A data structure acts shared memory (often a TypedDict or Pydantic model) that flows and mutate throughout the lifetime of the graph execution.
 
@@ -101,18 +104,19 @@ Components:
 
 - MessageState: Prebuilt LangGraph (TypeDict) Structure used to work with messages(AI, Human, Tool) list. It is defined with a single messages key which is a list of AnyMessage objects and uses the add_messages as reducer.
 
-- AgentState: Inherits "MessageState" extend with custom key (user_info, internal_notes, documents, next_step, remaining_steps, is_approved) alongside the default "messages" history to track agent-specific context. Designed natively for conversational agents.It extends basic message tracking, allowing you to easily a 
+- AgentState: Inherits "MessageState" extend with custom key (user_info, internal_notes, documents, next_step, remaining_steps, is_approved) alongside the default "messages" history to track agent-specific context. Designed natively for conversational agents. 
+
 
 2) Nodes: Python functions/LLM/Tool Calls that represent a unit of work. Nodes read and update the "State".
 
 - ToolNode: A pre-built node that acts as a automatically executes the tools requested by an LLM. It looks at the last message in the state, detects if the LLM made a "tool_calls" request, route and runs correct tool, and appends "tool_output" in ToolMessage(s) back to the graph state. 
-
 
 - tools_condition: Pre-built conditional-edge function (ReAct style), it looks at very last message in chat history. If AIMessage has "tool_calls" request it return "tools", If not then "__end__"
 
  - tool_calls: A hidden list/array attached to an AIMessage, LLM doesn't execute the tool itself. Instead, it stops generating regular text and outputs a structured request. (name:tool_name, args:LLM generated tool_input, id:LLM generated tool_id)
 
 - ToolMessages: A BaseMessage subclass used only to store the output of a tool execution.(content- raw-text/JSON/String tool output, tool_call_id-tool_id, tool_calls-Query-Response mapping)
+
 
 
 3) Edges: The connections between nodes that define the control flow. (add_edge("node_a","node_b"))
@@ -131,6 +135,8 @@ Advanced Conditional Routing Actions (Inside Nodes/Routers):
 
 - START/END: Special anchors that define the entry and exit points of your graph.
 
+
+
 ----------------------------------------------------Graph API-------------------------------------------------
 
 4) Checkpointer: Persistence implementation for agent, essentially maintains a list (or time-series history) of graph states as "StateSnapshot", indexed by every super-step of that specific graph/workflow.
@@ -145,15 +151,26 @@ get_state(): Returns the last stored StateSnapshot
 get_state_history(): Returns the entire stored StateSnapshot
   
 Feature of Persistence: 
-- Short-Term Memory (STM): Retains context and conversational data within single user thread so chatbot remembers immediate conversation. Implemented by creating a "checkpointer" and configured with "thread_id" for session to automatically track message history inside graph state.
 
-- Resume / Fault Tolerance: Interconnected features comes from "STM" preserving state data across sessions or system failures to prevent data loss. Implementated by creating "checkpointer" and configured with "thread_id" to load existing state history, and passing input state as None (workflow.invoke(None, config)) to resume execution exactly from last saved checkpoint.
+4.1) Short-Term Memory (STM): Retains context and conversational data within single user thread so chatbot remembers immediate conversation. Implemented by creating a "checkpointer" and configured with "thread_id" for session to automatically track message history inside graph state.
 
-- Human In The Loop: Pauses workflow execution to wait for manual human approval, state modification, or feedback. Implemented by configuring/adding "interrupt_before" or "interrupt_after" flags on specific graph nodes to automatically halt execution.
 
-- Time Travel: Enables navigating back to past execution states to debug, fork, or alter path. Implemented by fetching specific past state with its "checkpoint_id" from  "get_state_history()" and passes as (workflow.invoke(None/input_state, config(thread_id,checkpoint_id)) to rerun or update state from exact historical moment "update_state(config,input state)" .
+4.2) Resume / Fault Tolerance: Interconnected features comes from "STM" preserving state data across sessions or system failures to prevent data loss. Implementated by creating "checkpointer" and configured with "thread_id" to load existing state history, and passing input state as None (workflow.invoke(None, config)) to resume execution exactly from last saved checkpoint.
+  
+4.3) Time Travel: Enables navigating back to past execution states to debug, fork, or alter path. Implemented by fetching specific past state with its "checkpoint_id" from  "get_state_history()" and passes as (workflow.invoke(None/input_state, config(thread_id,checkpoint_id)) to rerun or update state from exact historical moment "update_state(config,input state)" .
 
-6) Streaming: Model start sending tokens(words) as soon as they're generated, instead of waiting for the entire response to be ready before returning it.
+
+4.4) Human In The Loop: Pauses workflow execution to wait for manual human approval, state modification, or feedback. Implemented by configuring/adding a "dict" in "interrupt()","interrupt_before" or "interrupt_after" flags from a node/tool to automatically halt execution then passing "Command(resume=dict)) during reinvoke.
+
+HITL is a way to add accountibility in agentic systems where "Humans" intervention used at critical points to supervise, approve, or guide model's outputs (Accuracy, Safety, Ethical, UX)
+
+HITL Patterns: 
+- Action Approval Pattern
+- Output Review Pattern
+- Ambiguity Clarification Pattern
+- Escalation Pattern
+
+5) Streaming: Model start sending tokens(words) as soon as they're generated, instead of waiting for the entire response to be ready before returning it.
 Inspired by Python generators because its .stream() method returns a generator object that continually yields message chunks on the fly as they are created, rather than waiting to return the final response all at once.
 
 Streaming modes:
@@ -186,17 +203,27 @@ Pros:
 Event Streaming:
 
 
-7) Fault Tolerance: When a node fails—from a slow external API, a transient network error, or an unhandled exception—LangGraph gives you three composable mechanisms to respond:
+6) Fault Tolerance: When a node fails—from a slow external API, a transient network error, or an unhandled exception—LangGraph gives you three composable mechanisms to respond:
  
 - Retries: automatically re-run failed attempts based on exception type and backoff settings. Implemented by passing retry_policy= to add_node  "retry_policy=RetryPolicy(max_attempts=3)" to "add_node"
 
 - Timeouts: cap how long a single attempt may run. Implemented passing number (seconds), a timedelta=, or a TimeoutPolicy= for separate run and idle limits "timeout=TimeoutPolicy(run_timeout=120, idle_timeout=30)
  
 - Error handling: run a recovery function after all retries are exhausted. It receives the current state and can update it or route to a different node using Command. Implemented by passing error_handler= to add_node.  "error_handler=payment_error_handler"
+
 payment_error_handler func:
 return Command( update={"status": f"compensated: {error.error}"}, goto="finalize",) 
 
+7) Subgraphs: It means a (child)graph that is embedded and executed as a node inside another (parent) graph. Useful in "Multi Agentic Systems". 
+Its provides:
+- Modularity       - Reusability
+- Maintainability  - Observability
+- State Separation - Failure Isolation
 
-_______________________________________________________________________________________________________
+Type: 
+  Outer Subgraph:                       Inner Subgraph:
+- Invoked from a parent Graph node      Exist as a parent graph node 
+- Seperate State                        Shared State
+_____________________________________________________________________________________________________
 
 

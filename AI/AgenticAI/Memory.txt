@@ -1,0 +1,93 @@
+LLM Memory:
+An LLM at inference(moment b/w question & answer) is just a Stateless Parameterized math function.
+
+LLM Math Equation y=f(x,p): Think of the LLM as a complex formula whos unit of work is "token"
+
+ - x (Input): This is the prompt or question you type into the chat.
+ - p (Parameters): These are the "brain" weights of the model (billions of values it learned during its training phase). At model inference, these weights are fixed and cannot change them .
+
+- y (Output): This is the response the model generates based on your input and its fixed internal knowledge.
+
+- Stateless Design: Key aspect i.e the model doesn't "remember" previous questions or its own previous answers. Every "New Query/Input" treats as a brand new, independent interaction, completely unaware of what happened before.
+_____________________________________________________________________________________________________________________________________________
+
+Problem 1: LLM has no intrinsic memory at inference
+
+Solution: "In Context Learning(STM/LTM)", allows to use info/patterns present in input/prompt in addition to trained "parametric knowledge" for output.
+
+Context Window: The amount of text/token an LLM can read and remember at one time before answering.
+
+Problem: Fragile STM and Context Window Shortage 
+
+Solution: Context Trimming, Context Summarization, Hybrid Context, LTM.
+______________________________________________________________________________________________________________________________________________
+
+
+
+(Chat Conversation ---> 1 Thread_id ---> n or (List)  Chat Messages/Turns)
+
+
+Short-Term Memory (STM): Conversational Buffers
+
+STM acts as a window into the current session, ensuring the LLM remembers previous turns within a specific thread. Based on the provided code, its implementation involves:
+
+- State Initialization: Managing thread_id and message_history within the session state to track active conversations.
+
+- Conversational Context: Sending the concatenated history as a buffer with every user input.
+
+- Persistence: Utilizing backend storage (like SQLite) to save threads, preventing context loss upon server reloads.
+
+- Optimization: Implementing trimming or summarization to keep conversation history within the LLM's context window limits.
+
+
+Resume Chat End-to-End Flow:
+
+Page Load
+   ↓
+Initialize Session State
+   ↓
+Load Existing Thread IDs
+   ↓
+User Selects Thread
+   ↓
+Load Messages from LangGraph Checkpointer
+   ↓
+Convert HumanMessage/AIMessage
+   ↓
+Store as message_history
+   ↓
+Render Chat UI
+   ↓
+User Sends Message
+   ↓
+chatbot.stream()
+   ↓
+Stream AI Tokens
+   ↓
+Persist in LangGraph State
+   ↓
+Append Final Response to message_history
+
+________________________________________________________________________________________________________
+
+Long-Term Memory (LTM): High-Level Architecture (LangMem, mem0, Supermemory)
+
+- Memory Extraction: The system processes conversation messages to identify potential memory candidates. This involves filtering out noise to isolate core facts or information, determining the appropriate scope (e.g., user-level or app-level), and deciding whether to create new memory, update existing records, or ignore the information.
+
+- Storage: Once decided, the filtered information is saved into a memory store. The system utilizes different storage methods or structures depending on the memory type—episodic, semantic, or procedural—along with necessary metadata for organization.
+
+- Retrieval: When a user starts a new interaction, the system selectively searches the memory store based on the current input. Unlike short-term memory, this is a selective search (not exhaustive) to bring only the most relevant subset of information into context.
+
+- Injection: This final step involves feeding the retrieved relevant information into the short-term memory (conversation buffer). It essentially becomes part of the prompt, allowing the LLM to access this long-term context via its input tokens.
+
+
+LTM Types:
+
+- Episodic Memory: This type of memory stores information about "past events or experiences". It helps the AI recall previous interactions, such as which solutions a user previously accepted or rejected, allowing for better continuity in current conversations.
+
+- Semantic Memory: This is considered the most common and important type of LTM. It consists of "factual information" about the user, the system,or specific tasks (e.g., the user prefers programming in *Python*, or a specific project has a set budget).
+
+- Procedural Memory: This type of memory focuses on "how to do things". It stores learned strategies, rules, and preferred workflows (e.g., if a specific tool fails, use a secondary tool, or always provide step-by-step explanations for a particular user).
+
+
+
