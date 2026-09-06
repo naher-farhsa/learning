@@ -1,0 +1,203 @@
+==================================================================================================================================================
+
+Build Implementation and Solution-Routing Foundations:
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Orient to Technical Solution Work:
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+Technical Fluency:
+- Translate product familiarity to practical solution judgment.
+- Connects customer workflows to credible solution paths,
+- Ask better implementation questions.
+- Recognize tradeoffs earlier, know when a specialist needs to validate the next step.
+
+Central Question : How do I route a technical opportunity responsibly before I over-design it, overclaim it, or hand it to the wrong team?
+
+3 Decision Axes and Signal Fits :
+- User or Product Surface : Tells Where will the person or workflow primarily operate?
+ChatGPT Chat: Ideal for interactive, conversational brainstorming, explore, draft, critique, or refine.
+  - ChatGPT Work: Ideal for delegating structured knowledge tasks governed by explicit outcome/goal, context, boundaries, constraints, and review standards.
+  - Codex: Ideal for software engineering, code repository analysis, testing, debugging, and technical documentation.
+  - API Applications: Ideal for embedding programmatic AI intelligence directly into custom products, software workflows, or system experiences.
+
+- Product Capabilities or Architecture : Tells What must the system do?
+Retrieval
+Structured Outputs
+Tool use
+Agentic orchestration or  automation
+Multimodal or Realtime interaction
+
+- Deployment Choices & Operation : Tells Where and how will it run and be controlled?  Consider hosting or embedding:
+  - Identity
+Permissions
+Approvals Human review Retention
+Logging
+Model-hosting constraints
+
+
+4 Layers of Early Technical Judgement:
+- User or workflow : Who needs help? What work is being done? What output is required? What is the specific business problem? Is it repeatable or a one-off?
+- Context and data : What does the AI need to know, retrieve, access, or respect? Do we have representative, current, and usable data? Labels are target annotations used for a defined task; data cleanliness, completeness, and formatting are separate quality dimensions.
+- Runtime and tools : Where does the work happen? Which systems or tools are used? What actions are allowed?
+- Governance and observability : How will the organization monitor, control, evaluate, and improve the solution?
+
+
+Context Quality Checklist :  What information does the system need, where does it come from, who is allowed to access it, and how will accuracy be checked?"
+- User-provided details
+- Retrieved knowledge
+- Connected systems
+- Files and documents
+- Structured data
+- Tool outputs
+- Policies and operating rules
+- Permissions and access boundaries
+
+Eval :
+- Structured ways to test whether an AI-supported solution behaves as expected.
+- A customer-facing workflow, evals may also test whether outputs are accurate enough, consistent enough, and safe enough before they reach users.
+
+Guardrail :
+- Controls that shape how the system behaves.
+- Define what the system can do, what it should not do, what kind of output it should produce, and when it should refuse, escalate, or ask for human review.
+- Relate to data access, tool use, output format, approval rules, policy boundaries, or human oversight.
+
+“Which operations workflow are you trying to improve?”
+“Who would use the assistant day to day?”
+“What information would the assistant need?”
+“Should it only answer questions, or should it take action?”
+“Which systems are involved?”
+“Which outputs would need review or approval?”
+“What data, security, or governance requirements should we understand?”
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Technical Implementation Foundations:
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Implementation Partner :  Implementation is not one build step. It is a lifecycle of decisions, dependencies, tests, safeguards, owners, and evidence. Is the workflow clear enough for responsible implementation planning?
+
+strong implementation path clarifies:
+What the solution must do
+Who will use it
+What systems it connects to
+What data it needs
+How outputs will be checked
+What risks must be controlled
+Who owns launch and improvement
+
+
+Implementation Lifeycle:
+                   +------------------------------+
+                   |  (1) Frame workflow          |
+             +---- |      and output              | ----+
+             |     +------------------------------+     |
+             |                                          v
++------------+-----------------+        +---------------+---------------+
+| (8) Prepare for release,     |        | (2) Confirm data, access,     |<---+
+|     monitoring & improvement |        |     & system dependencies     |    |
++------------^-----------------+        +---------------+---------------+    |(Iterative
+             |                                          |                    | Feedback)
+             |    + - - - -  - - - - - - - - - - - - - -|- - - - - - - - - - +
++------------+-----------------+        +---------------+---------------+
+| (7) Test and iterate         |        |  (3) Choose interaction path  |
++------------^-----------------+        +---------------+---------------+
+             |                                          |
+             |                                          |
+             |                                          v
++------------+-----------------+        +---------------+---------------+
+| (6) Define evals and         |        | (4) Prototype with            |
+|     success criteria         |        |     safe inputs               |
++------------^-----------------+        +---------------+---------------+
+             |                                          |
+             |     +------------------------------+     |
+             +---- | (5) Add safeguards           |<----+
+                   |     and review points        |
+                   +------------------------------+
+
+
+Request - Response Thinking:
+
+Request may include :
+- User or application input
+- System-level instructions
+- Approved context
+- Files or structured data
+- Built-in or custom tools, including any retrieval step
+- An output contract; use Structured Outputs with an appropriate JSON Schema when a downstream system requires a reliable structured result
+- State or prior response information needed to continue the workflow across turns 
+- Identity and permissions needed to return data or take action for the right user
+
+Response may include :
+include:
+- Written answer or generated draft
+- Structured output
+- Classification or recommendation
+- Tool call or tool result
+- Status, continuation, or approval request
+- Refusal or escalation
+
++------------------------------+--------------------------------+--------------------------------------+---------------------------------+-----------------------------------+
+| Implementation consideration | Development                    | Test                                 | Staging                         | Production                        |
++------------------------------+--------------------------------+--------------------------------------+---------------------------------+-----------------------------------+
+| Data sources                 | Safe samples                   | Test data                            | Production-like data            | Live business data                |
+| Systems involved             | Local or manual systems        | Test systems                         | Integrated systems              | Live systems                      |
+| Access assumptions           | Limited team access            | Role-based access                    | Approved access                 | Controlled access                 |
+| Owner assumptions            | Builder-led                    | Shared team ownership                | Named owners                    | Accountable owners                |
+| Monitoring                   | Basic checks                   | Test logging                         | Alerts and review               | Live monitoring                   |
+| Rollback questions           | Can the process be restarted?  | Can the previous version be restored?| Can the release be rolled back? | Is there a defined rollback plan? |
++------------------------------+--------------------------------+--------------------------------------+---------------------------------+-----------------------------------+
+Implementation Readiness Snapshot:
+What are we trying to implement? Capture the basic workflow shape.
+How does the AI interaction work? Describe the basic information flow.
+What needs to be ready around the solution? Name the environment, data, access, and ownership considerations.
+What needs to be tested, reviewed, or escalated? Identify the evidence and controls needed before broader use.
+
+---
+Model Selection and Solution Patterns:
+---
+Idnetify task patterns;
+Summarization and synthesis
+Classification and routing
+Extraction and structuring
+Drafting and rewriting
+Reasoning and analysis
+Retrieval-grounded answering
+Tool-using workflow support
+Multimodal understanding
+Voice or real-time interaction
+Code or developer workflow support
+Moderation and safety filtering
+Model Selection Classes:
++--------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| Decision category                                | Practical use in a workflow                                                                                             |
++--------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| Reasoning-oriented models                        | Useful when the task requires multi-step analysis, planning, ambiguity handling, policy interpretation, technical       |
+|                                                  | reasoning, or judgment-heavy work.                                                                                      |
++--------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| General-purpose models                           | Useful for broad language tasks such as drafting, summarization, rewriting, classification, and everyday workflow       |
+|                                                  | support.                                                                                                                |
++--------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| Efficient models                                 | Useful when speed, cost, and scale matter and the task is relatively stable, simple, or high volume.                    |
++--------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| Multimodal models                                | Useful when the workflow involves images, documents, screenshots, audio, or mixed inputs and outputs.                   |
++--------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| Audio or real-time models                        | Useful for speech, transcription, streaming, voice interaction, and low-latency conversational experiences.             |
++--------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| Embedding models                                 | Useful for semantic search, retrieval, similarity comparison, clustering, and organizing knowledge for later use.       |
++--------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| Capability or architecture: moderation and safety| Useful when the workflow needs to identify unsafe, sensitive, disallowed, or escalation-worthy content.                 |
+| filtering                                        |                                                                                                                         |
++--------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| Capability or architecture: tool use             | Useful when the workflow needs to call functions, use APIs, retrieve information, perform calculations, or coordinate   |
+|                                                  | actions across systems.                                                                                                 |
++--------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| Model or deployment option: open models          | Useful when hosting, customization, deployment environment, infrastructure, policy, latency, or cost structure          |
+|                                                  | constraints require evaluation.                                                                                         |
++--------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------+
+| Capability or architecture: retrieval and ranking| Retrieval returns candidate results for a query; ranking or reranking orders those candidates by relevance before       |
+|                                                  | downstream use.                                                                                                         |
++--------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------+

@@ -1,0 +1,147 @@
+======================================================================================================================
+Claude vs Claude Code vs Claude Cowork
+
++-----------------------+--------------------------------+------------------------------------+------------------------------------+
+| Feature               | Claude (Chat)                  | Claude Code                        | Claude Cowork                      |
++-----------------------+--------------------------------+------------------------------------+------------------------------------+
+| Primary Interface     | Web, Desktop, Mobile           | Terminal / CLI, VS Code, IDEs      | Claude Desktop App                 |
++-----------------------+--------------------------------+------------------------------------+------------------------------------+
+| Primary Purpose       | Writing, general Q&A, research | Software engineering & development | General knowledge work & automation|
++-----------------------+--------------------------------+------------------------------------+------------------------------------+
+| File System Access    | Read-only (via manual uploads) | Direct local file read, edit, write | Scoped folder read, edit, write   |
++-----------------------+--------------------------------+------------------------------------+------------------------------------+
+| Command Execution     | None                           | Direct shell command execution     | Sandboxed VM & execution tools     |
++-----------------------+--------------------------------+------------------------------------+------------------------------------+
+| Workspace / Context   | Snippets & pasted files        | Full repository awareness          | Authorized local directory         |
++-----------------------+--------------------------------+------------------------------------+------------------------------------+
+| Workflow Model        | Conversational assistant       | Autonomous agentic task execution  | Autonomous agentic task execution  |
++-----------------------+--------------------------------+------------------------------------+------------------------------------+
+| Tools & Integrations  | Web search, basic artifacts    | Git, linters, test suites, IDEs    | Documents, CSVs, web, connectors   |
++-----------------------+--------------------------------+------------------------------------+------------------------------------+
+
+Claude Code Working:
++------------------+------------------------------------+------------------------------------+
+| Component        | Working Mechanism                  | Key Behavior & Safety Controls     |
++------------------+------------------------------------+------------------------------------+
+| Agentic Loop     | Gathers context, executes action,  | Autonomous loop; user can steer,   |
+|                  | verifies result, and iterates.     | add context, or interrupt anytime. |
++------------------+------------------------------------+------------------------------------+
+| Context Window   | Stores conversation, files, and    | Auto-compacts & summarizes memory  |
+|                  | command outputs in active memory.  | once context capacity is reached.  |
++------------------+------------------------------------+------------------------------------+
+| Tool Integration | Semantically determines when to    | Runs tools (file read, web search) |
+|                  | invoke tools for task execution.   | dynamically to accomplish tasks.   |
++------------------+------------------------------------+------------------------------------+
+| Permissions      | Controls authorization levels for  | Modes: Default (Ask), Auto-accept  |
+|                  | file edits and shell execution.    | edits, Plan mode (Read-only tools).|
++------------------+------------------------------------+------------------------------------+
+
+Claude Workflow Lifecyle
+
++--------------------------------------+
+| Explore --> Plan --> Code --> Commit |
++--------------------------------------+
+
+Explore gives Claude the relevant context it needs for your project.
+Plan creates a plan of action that Claude uses to measure success.
+Code is the back and forth between you and Claude before settling on the final outcome.
+Commit helps you review and push your code so you can start on your next feature.
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    
+Core Context & Memory Commands:
+- /init
+- /memory
+- /compact
+- /context
+- /clear
+- /rewind
+
+Execution & Automation Commands:
+- /plan
+- /goal
+- /background
+- /schedule
+
+
+System Control & Tuning Commands:
+- /model
+- /effort
+- /cost
+- /code-review
+
+========================================================================================================================
+
+
+
+Start Claude:
+------------------------------------------------------------------------------------------------------------------------
+- /init   : Generates a starter CLAUDE.md 
+- /effort : Calibrates processing cycles by choosing Claude (Low/Medium/High/Max) evaluates the codebase prior to editing.
+- /model  : Opens a dynamic prompt to swap the current base model mid-session.
+
+Scope & Steer Claude:
+------------------------------------------------------------------------------------------------------------------------
+- /plan        : Switches Claude into an explicit planning state prior to executing major architectural changes.
+- /goal        : Sets a fixed termination condition (e.g., "until all tests pass") and lets Claude run iteratively.
+- /loop        : Executes a specific diagnostic prompt or test command on a continuous repeat sequence.
+- /background  : Detaches the current CLI terminal session so Claude can complete a task as a background agent
+- /schedule    : Configures a prompt to execute on an automated background timer.
+
+- /memory      : Opens a menu to edit persistent rules. Update User memory (global via ~/.claude/CLAUDE.md) or Project memory (committed via ./CLAUDE.md).
+- /compact     : Compresses your active token and message history into a clean summary
+- /clear       : Wipes the current chat history to begin fresh on an entirely separate ticket. (Aliases: /reset, /new).
+- /fork [name] : Splits the current session history into an isolated branch to safely test parallel development tracks.
+- /rewind      : Serves as a full roll-back function for terminal commands and AI history. (Alias: /checkpoint).
+- /btw         : Injects a side question or piece of context without interrupting Claude's active execution thread.
+
+- /context     : Generates a color-coded usage grid mapping remaining limits.
+- /usage       : Displays an explicit running count of cumulative tokens and API costs.
+- /cost        : Returns instantaneous telemetry showing cumulative session token counts and active dollar usage.
+- /code-review : Evaluates active file modifications or specific PR IDs for edge cases, bugs, and style flaws
+
+
+
+Configure Claude: 
+------------------------------------------------------------------------------------------------------------------------
+- CLAUDE.md        : Permanent personalized conventions/guide tech stack, dos & donts, coding style, and build commands without requiring you to re-explain them. (Workspace/User)
+
+- Subagents        : Main Agent split and delegate tasks to each subagent that will operates in its own isolated context window running in parallel, improving context management.
+
+- SKILL.md         : SOPs on how to perform a specific, multi-step task or workflow on demand.
+
+- Hooks            : Run custom shell scripts, HTTP requests, or code automatically at specific moments in the ClaudeCode lifecycle, configured via (settings.json (global/workspace/user)
+
+- Permission Modes : Control how an AI tool handles file edits and commands
+
+  - manual           : The tool asks you before every single action or change.
+  - dontAsk          : The tool runs tasks without asking you for permission.
+  - plan             : The tool creates a step-by-step guide before it makes changes.
+  - acceptEdit       : The tool applies text and file edits automatically.
+  - auto             : The tool makes decisions and runs standard actions on its own.
+  - bypassPermission : The tool skips all safety checks and security blocks.
+
+~/.claude/               : (global/user)
+or
+./<project root folder>/ : (project/workspace)
+
+    /CLAUDE.md 
+  
+    /skills
+        /SKILL-A.md 
+        /SKILL-B.md 
+  
+    /settings.json/ 
+           "hooks" :{} 
+  

@@ -1,0 +1,381 @@
+Message Signal : The actual data or information you want to send (like your voice or a video). (Imported Car)
+
+Carrier Signal : The high-frequency wave used as a vehicle to transport that data over long distances. (Cargo Ship)
+
+Modem: Modulation and Demodulation of Signal
+
+
+Application +  [Data] --> Transport/  [Segment] --> Network/ [Packets] --> DataLink [Frames] --> Physical [Bits]
+Presentation +            Host Layer                Internet               Layer                 Layer 
+Session Layer                                       Layer                  (------Network Interface Layer)------) 
+                                                     
+
+
+Transmission Media:
+ 
+Types of Guided Media:
+Twisted Pair
+Coaxial Cable
+Optical Fiber Cable
+
+Types of Unguided Media:
+Radio Transmission
+Microwave Transmission
+Lightwave Transmission
+
+
+Transmission Approach:
+- CNS : Circuit-Switching (Mainly Telephone Network)
+- PSN : Packet-Switching  (Mainly Internet Network)
+
+Hardware Equipments:
+Hub : Broadcasts data to all ports blindly 
+Switch : Sends data directly to the intended device using MAC addresses 
+Router : Connects separate networks—like a home network to the internet—using IP addresses
+
+Internet ---> (Telephone | Mobile)
+
+-----------------------------------------------------------------------
+
+Telephone Network: Handles voice calls using landlines or cell towers. Circuit-switched system designed for dedicated analog or digital voice communication.
+
+Connectivity:
+- Dial Up : Copper Wired
+- PSTN : Public Switched Telephone Network
+
+Ethernet
+
+--------------------------------------------------------------------------
+
+Internet Network: Handles digital data packets globally via cables or Wi-Fi. Packet-switched global data network that routes diverse traffic—such as audio, video, and text—simultaneously across shared, non-dedicated pathways.
+
+Connectivity:
+DSL - Digital Subscriber Line (Copper Wired High Frequency)
+FTTP/FTTH - Fiber To The Premise/Home (100% Premise)
+- PTP : Point To Point
+
+- PON : Passive Optical Network
+  - OLT : Optical Line Terminal
+  - ONT : Optical Network Terminal
+
+Wifi: Wireless Fidelity
+
+Satellite
+
+------------------------------------------------------------------------
+
+Mobile Network: Wireless cellular infrastructure that carries both voice calls and mobile internet data to phones on the move.
+
+Connectivity:
+Cellular (4G, 5G, VoLTE)
+- CDMA : Code Division Multiple Access
+- FDMA : Frequency Division Multiple Access
+
+Bluetooth
+
+NFC
+
+------------------------------------------------------------------------
+
+Network Coverage:
+    Public    Private
+PAN    Y         Y
+LAN    Y         Y
+MAN    Y         N
+WAN    Y         N
+VPN    N         Y
+
+-------------------------------------------------------------------------
+
+Telecom Network:
+- POTS : Plain Old Telephone System
+- SPC : Stored Program Control
+- CCSN : Common Channel Signaling Network 
+- SS7 : Signaling System 7
+- VoIP :  Voice Over IP (Packet Switched Internet Network)
+- SIP : Session Initiation Protocol
+- H.323 : 
+
+Convergence: 
+- CNS (Circuit-Switched Network (OLD))  --> PSN (Packet-Switched Network (NEW))
+- VoATM : Voice Over Async Transfer Mode
+- VoFR: Voice over Frame Relay
+
+------------------------------------------------------------------------
+
+Intranet: Similar like Internet buts local data network (Within Premises)
+
+VPN: Virtual Private Network (Creates a dedicated private boundary with public network
+- Remote Access VPN
+- Site2Site VPN
+- Extranet
+- Client/Server VPN
+Protocol:
+- IP
+- PPTP : Point 2 Point Tunnelling Protocol
+- L2TP : Layer 2 Tunelling Protocol
+
+-------------------------------------------------------------------------
+
+UMS: Unified Messaging System:
+- SMS
+- Voice Mail
+- E-Mail
+- FAX
+- Video Message
+
+Wireless Communication:
+Multiplexing: Dividing same bandwidth to allow multiple users for single channel
+- FDM : Frequency Division Multiplexing
+- TDM : Time Division Multiplexing
+- CDM : Code Division Multiplexing
+
+Mobile Technology:
+FDM --> FDMA : Frequency Division Mutliple Access 
+TDM --> TDMA : Time Division Mutliple Access     
+CDM --> CDMA : Code Division Mutliple Access
+
+WCDMA --> Wideband CDMA
+OFDMA --> Orthogonal FDMA
+
+Gen | Access | Signal  | Standard
+----+--------+---------+---------
+1G  | FDMA   | Analog  | AMPS
+2G  | TDMA   | Digital | GSM
+3G  | WCDMA  | Digital | UMT
+4G  | OFDMA  | Digital | LTE/LTE-Advanced/ WiMAX
+5G  | OFDMA  | Digital | 5GNR (New Radio)
+
+--------------------------------------------------------------------------
+Telecom Terminologies:
+CSP : Communication Service Provider
+ISP : Internet Service Provider
+MSP : Mobile Service Provider
+
+BSS : Business Support System 
+- CRM (Customer Relationship Management)
+- CPQ (Configure, Price, Quote)
+- Billing & Revenue Management
+- OMT (Order Management for Telecom) --> (TMF, ServiceNowOMT)
+- Self-Service Portals
+
+OSS : Operational Support System 
+- Fault Tolerance
+- Config Management
+- Service Provision
+- Network Inventory
+- Performance Management
+
+Architecture:
+Layer 1: 
+- Customer Management
+- Service Management 
+- Resource Management
+- Supplier/Patner Management
+
+Layer 2:
+Security Management
+
+Layer 3:
+- Layer 3.1: Customer Care
+- Layer 3.2: OSS (Inventory + FulfilLment + Assurance)
+- Layer 3.3: BSS (Biling + Rating + Collection)
+
+Tele Management Forum (TMF):
+- Business Process Framework (eTOM : Enhanced Telecom Operation)
+- Information Framework (SID : Shared Information & Data Model)
+- Applications Framework (TAM : Telecom Application Map )
+
+  
+NSOSS: New Gen OSS
+- FAB : Fulfillment Assurance and Billing
+- ODF : Open Digital Framework
+- ODA : Open Digital Architecture
+- TMN : Telecom Management Network
+----------------------------------------------------------------------------
+Business & Tech Trend & Outsourcing:
+
+ILEC (Incumbent Local Exchange Carriers) Telco:
+Sources of revenue:
+- Voice (Telephony)
+- Data (Internet)
+- Video (TV)
+
+Upcoming/New sources of revenue:
+- IP based services using fiber based infrastructure (FTTN/FTTH)
+  - Voice
+  - Internet
+  - TV services 
+
+Examples of IP based networks :
+- AT&T Lightspeed
+- Verizon FioS
+- BT 21CN
+
+
+Tech Trend:
+- Advanced Data Analytics
+- Automation
+
+
+Mobile Service Providers:
+Sources of revenue:
+- Voice
+- Messaging (SMS, MMS)
+- Mobile Entertainment (Juke Box/Music, Video downloads, Wallpapers, Ringtones etc.)
+- Lifestyle applications
+- VAS services: News, Weather Updates, Travel, Ticketing
+
+Upcoming/New sources of revenue:
+- Mobile banking (M-Banking)
+- Games
+- Location Based Services
+- Mobile TV (Audio/Video Streaming)
+
+Tech Trend:
+- 5G Deployment
+- Network Virtualization
+- Enhanced Moible Services
+
+
+CATV, Satellite TV, IPTV:
+Sources of revenue:
+- Tripe Play Services
+- Cable Television
+- Voice (Telephony)
+- Data (Internet)
+
+Upcoming/New sources of revenue:
+- Advertising: Content based advertising is picking up fast
+- HDTV (High Density Television)
+- Interactive Television 
+
+Tech Trend:
+- Streaming Services
+- Advanced N/W Experience
+- Network Security
+
+
+Network Equipment Providers:
+Sources of revenue:
+- Supply and maintenance of network equipments
+
+Tech Trend:
+- 5G Infra
+- IoT Integration
+- Cloud Networking
+
+
+Upcoming Business Trends:
+- Mobile Apps
+- M&A (Merger & Acquisition)
+- Broadband
+- Advertising
+- Stimulus
+
+Upcoming Tech Trends:
+- LTE & WiMAX
+- FMC
+- Green Computing
+
+Outsourcing Trends:
+- New Delivery Model
+- ITO Providers
+- Alternate Delivery and Acquisition Models
+- SaaS
+- Business Process Utility
+- Infra Utility
+- Remote Management Services
+
+
+Future Trends:
+- HSDPA : High Speed Downlink Packet Access
+- DAB : Digital Audio Broadcasting
+- DVBH : Digital Video Broadcasting Handheld
+- WIMAX : Worldwide Interoperability for Microwave Access
+- Wi-Fi : Wireless Fidelity
+
+---------------------------------------------------------
+
+Wireline Industry:
+- Wireline PSTN
+- Telecom Workforce Distribution
+- International Calling
+
+Communication Stakeholders:
+
+OEM:
+- Cisco
+- Juniper
+- Huawei
+- Ericsson
+- NSN (Nokia Siemens Network)
+- Samsung
+- ITI Limited
+- Tejas Networks
+
+ILEC: Incumbent Local Exchange Carrier
+- AT&T
+- Verizon
+- Lumen Tech
+- VMO2
+- Colt
+- BSNL
+- MTNL
+- Jio
+- Airtel
+- Tata Comm
+
+CLEC: Competitve Local Exchange Carrier
+- COMCAST
+- ACT
+- Excitel
+- Tracfone
+
+Product Vendors: IT Enablers
+COTS: Commercial Off-The-Shelf Products
+
+COTS --- x --- O/BSS
+
+O/BSS COTs:
+- Amdocs
+- CSG
+- Oracle Comm
+- ServiceNow
+  - TSM : Telecom Service Management
+  - TSOM : Telecom Service Operations Management
+  - TNI : Telecom Network Inventory 
+  - SOMT : Sales and Order Management for Telecom
+
+
+OEM COTs:
+- Cisco
+- IBM
+- Ericsson
+- Nokia
+- ZTE	
+
+System Integrators:
+- Cognizant
+                   
+Telecom Regulatory:
+- FCC (Federal Communication Commission)
+- TRAI (Telecom Regulator Authority of India)
+- OfCom (Office of Communication)
+- ITU (International Telecommunication Union)
+- TMF (Tele Management Forum)
+- UMTS (Universal Mobile Telecom System Forum)
+- OMA (Open Mobile Alliance)
+- OC (Open Cable)
+
+---------------------------------------------------------------------------------
+
+[ILEC/CLEC]     COTS ------------+
+                                 |                  
+[O/BSS Vendor]  COTS ------System Integrator ---------> [SaaS] ----------> CUSTOMER
+                                 |                 Unified Marketplace
+[OEM Vendor]    COTS-------------+
+
+|_______________________________ [Telecom Regulator] ____________________________|
+
+

@@ -1,0 +1,505 @@
+====================================================================================================================================================================================
+1. NETWORK COMMUNICATION MODEL (How data moves across a network stack)
+====================================================================================================================================================================================
+
++---+--------------------+-----+-----------------------+-------------------+---------------------------------------------------+
+| # | OSI Layer          | Map | TCP/IP Layer          | Data Unit (PDU)   | Key Protocols (with Modern & WebRTC Stacks)       |
++---+--------------------+-----+-----------------------+-------------------+---------------------------------------------------+
+| 7 | Application        |     |                       | Data / Message    | HTTP/1.1-2, HTTP/3, WebSockets, SDP, Opus/VP9/AV1 |
+| 6 | Presentation       | ---+| 4. Application        | Formatted Data    | TLS 1.3, DTLS, SRTP, Protobuf, JSON, MIME         |
+| 5 | Session            |     |                       | Session Data      | ICE, STUN, TURN, SOCKS5, RPC                      |
++---+--------------------+-----+-----------------------+-------------------+---------------------------------------------------+
+| 4 | Transport          | --->| 3. Transport          | Segment / Datagram| TCP, UDP, QUIC, SCTP                              |
++---+--------------------+-----+-----------------------+-------------------+---------------------------------------------------+
+| 3 | Network            | --->| 2. Internet           | Packet            | IPv4, IPv6, ICMP, IPsec, BGP, OSPF                |
++---+--------------------+-----+-----------------------+-------------------+---------------------------------------------------+
+| 2 | Data Link          | ---+| 1. Link               | Frame             | Ethernet (802.3), Wi-Fi (802.11), ARP, VLAN       |
+| 1 | Physical           |     |    (Network Access)   | Bit               | 1000BASE-T, 5G NR, Fiber Optics PHY, PAM4         |
++---+--------------------+-----+-----------------------+-------------------+---------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| LAYER 7: APPLICATION                                                                                                        |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| OSI / TCP Layer   | OSI 7 / TCP-IP 4 (Application)                                                                          |
+| Data Unit (PDU)   | Application Data / Message Payload                                                                      |
+| Function & Scope  | End-user application protocols, media codecs, and API data exchanges.                                   |
+| Protocols         | HTTP/1.1, HTTP/2, HTTP/3 (QUIC-based), DNS, WebSockets, SDP, Media Codecs (Opus, VP9, AV1)              |
+| APIs / Interfaces | REST, gRPC, GraphQL, WebSockets API, W3C WebRTC `RTCPeerConnection`                                     |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| LAYER 6: PRESENTATION                                                                                                       |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| OSI / TCP Layer   | OSI 6 / TCP-IP 4 (Application)                                                                          |
+| Data Unit (PDU)   | Formatted / Encrypted Data                                                                              |
+| Function & Scope  | Encryption, decryption, compression, and serialization between network formats and app objects.         |
+| Protocols         | TLS 1.3, DTLS (Datagram TLS for UDP/WebRTC), SRTP (Secure Real-time Transport), MIME                    |
+| APIs / Interfaces | WebCrypto API, Protobuf Serializer, FlatBuffers, JSON/XML Parsers                                       |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| LAYER 5: SESSION                                                                                                            |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| OSI / TCP Layer   | OSI 5 / TCP-IP 4 (Application)                                                                          |
+| Data Unit (PDU)   | Session State Data                                                                                      |
+| Function & Scope  | Establishes, negotiates, maintains, and terminates communication sessions and NAT traversal paths.      |
+| Protocols         | ICE (Interactive Connectivity Establishment), STUN, TURN, SOCKS5, NetBIOS                               |
+| APIs / Interfaces | ICE Candidate Callbacks (`onicecandidate`), RPC Session Handlers, OAuth/JWT Session Context             |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| LAYER 4: TRANSPORT                                                                                                          |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| OSI / TCP Layer   | OSI 4 / TCP-IP 3 (Transport)                                                                            |
+| Data Unit (PDU)   | Segment (TCP) / Datagram (UDP / QUIC)                                                                   |
+| Function & Scope  | Host-to-host end-to-end transport, port multiplexing, flow control, and error recovery.                 |
+| Protocols         | TCP (Reliable stream), UDP (Low-latency datagram), QUIC (UDP multiplexed TLS), SCTP (WebRTC DataChannel)|
+| APIs / Interfaces | Berkeley Sockets (`SOCK_STREAM`, `SOCK_DGRAM`), POSIX Sockets, `RTCDataChannel` Interface               |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| LAYER 3: NETWORK                                                                                                            |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| OSI / TCP Layer   | OSI 3 / TCP-IP 2 (Internet)                                                                             |
+| Data Unit (PDU)   | Packet                                                                                                  |
+| Function & Scope  | Logical IP addressing, cross-network packet routing, path discovery, and network control messages.      |
+| Protocols         | IPv4, IPv6, ICMP, IPsec, BGP, OSPF                                                                      |
+| APIs / Interfaces | Raw Sockets (`AF_INET` / `SOCK_RAW`), Linux Netlink, Kernel Routing Tables                              |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| LAYER 2: DATA LINK                                                                                                          |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| OSI / TCP Layer   | OSI 2 / TCP-IP 1 (Link / Network Access)                                                                |
+| Data Unit (PDU)   | Frame                                                                                                   |
+| Function & Scope  | Node-to-node frame transfer on the same local network segment, MAC addressing, and link error checking. |
+| Protocols         | Ethernet (IEEE 802.3), Wi-Fi (IEEE 802.11), ARP, L2TP, VLAN (802.1Q)                                    |
+| APIs / Interfaces | Packet Sockets (`AF_PACKET`), Libpcap / Npcap, OS Network Interface Card Drivers                        |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| LAYER 1: PHYSICAL                                                                                                           |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| OSI / TCP Layer   | OSI 1 / TCP-IP 1 (Link / Network Access)                                                                |
+| Data Unit (PDU)   | Bit / Electrical Signal                                                                                 |
+| Function & Scope  | Transmission of raw unstructured binary streams over physical mediums (optical, copper, radio waves).   |
+| Protocols         | 1000BASE-T Ethernet PHY, 5G NR Radio, Fiber Optics (100GBASE-LR4), DSL PHY, PAM4 Modulation             |
+| APIs / Interfaces | PHY Controller Firmware, Serial/UART Interfaces, Hardware Registers, Baseband Processors                |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
+
+====================================================================================================================================================================================
+2. NETWORK ARCHITECTURE MODEL (How nodes interact and exchange traffic over a network)
+====================================================================================================================================================================================
+
++---+----------------------------------+-----------------------------------+---------------------------------+----------------------------------------+
+| # | Architecture Pattern             | Primary Node Roles                | Data & Control Flow             | Key Protocols & Interconnect Specs     |
++---+----------------------------------+-----------------------------------+---------------------------------+----------------------------------------+
+| 1 | Client-Server                    | Requestor + Provider              | Asymmetric / Request-Response   | HTTP/S, gRPC, SQL Wire Protocols, SSH  |
+| 2 | Peer-to-Peer (P2P)               | Equal Servent Peers               | Distributed / Overlay Swarm Mesh| BitTorrent, IPFS (libp2p), Kademlia    |
+| 3 | Event-Driven (Pub/Sub)           | Producer, Broker, Subscriber      | Asynchronous Pushed Event Stream| MQTT, AMQP, Kafka Wire Protocol, STOMP |
+| 4 | Service Mesh / Microservices     | Ingress Gateway, Sidecar Proxies  | East-West Inter-Service Mesh    | HTTP/2, gRPC, mTLS, Envoy xDS          |
+| 5 | Leader-Follower (Consensus)      | Primary Leader + Replicas         | Single-Writer Replication & Log | Raft, Paxos, Postgres WAL, MySQL Repl  |
+| 6 | Server-Assisted Hybrid           | Rendezvous Server + Edge Peers    | Central Control -> Direct Data  | STUN, TURN, ICE, SDP, WebSockets       |
++---+----------------------------------+-----------------------------------+---------------------------------+----------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 1. CLIENT-SERVER ARCHITECTURE                                                                                               |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Interaction Model | Centralized Request-Response                                                                            |
+| Node Roles        | Client (Initiates requests), Server (Central processing & database authority).                          |
+| Traffic Pattern   | North-South traffic (Clients outside network connecting inwards to central servers).                    |
+| Use Cases         | Web portals, mobile backends, relational database access, central API services.                         |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 2. PEER-TO-PEER (P2P) ARCHITECTURE                                                                                          |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Interaction Model | Fully Distributed Overlay Mesh                                                                          |
+| Node Roles        | Servents (Every node acts as both a consumer and distributor of data).                                  |
+| Traffic Pattern   | Direct Peer-to-Peer traffic across an overlay network.                                                  |
+| Use Cases         | Decentralized file sharing, blockchain networks, distributed file systems (IPFS).                       |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 3. EVENT-DRIVEN / PUB-SUB ARCHITECTURE                                                                                      |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Interaction Model | Decoupled Asynchronous Pushing                                                                          |
+| Node Roles        | Publisher (Produces events), Broker (Stores/Routes messages), Subscriber (Consumes events).             |
+| Traffic Pattern   | Fan-out distribution from single publishers to multiple decoupled subscribers.                          |
+| Use Cases         | IoT sensor streams, real-time telemetry, asynchronous task queues, distributed event processing.        |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 4. SERVICE MESH / MICROSERVICES NETWORK INTERCONNECT                                                                        |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Interaction Model | Multi-Service Interconnect Topology                                                                     |
+| Node Roles        | Ingress Gateway (Border entry), Sidecar Proxies (Traffic management), Service Instances (Compute).      |
+| Traffic Pattern   | East-West traffic (Heavy internal service-to-service communication within datacenters/clusters).        |
+| Use Cases         | Large microservice deployments requiring mTLS encryption, traffic splitting, and distributed tracing.   |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 5. LEADER-FOLLOWER / CONSENSUS ARCHITECTURE                                                                                 |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Interaction Model | Single-Writer Master Replication                                                                        |
+| Node Roles        | Leader / Primary (Handles all write mutations), Followers / Replicas (Process read queries).            |
+| Traffic Pattern   | Unidirectional state replication log streaming from Leader to Followers.                                |
+| Use Cases         | High-availability databases, distributed state stores (etcd, ZooKeeper), transactional systems.         |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 6. SERVER-ASSISTED HYBRID (P2P + SIGNALING)                                                                                 |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Interaction Model | Central Control Plane with Distributed Peer Data Plane                                                  |
+| Node Roles        | Signaling/STUN/TURN Server (Coordinates discovery/NAT traversal), Edge Peers (Exchange live data).      |
+| Traffic Pattern   | Control traffic via central server; high-throughput media traffic streams directly peer-to-peer.        |
+| Use Cases         | WebRTC video conferencing, peer-assisted live video streaming, multiplayer gaming lobbies.              |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
+
+====================================================================================================================================================================================
+3. APPLICATION ARCHITECTURE MODEL (How software source code is modularized and organized)
+====================================================================================================================================================================================
+
++---+----------------------------------+-------------------------+------------------------------------+-------------------------------------------------------+
+| # | App Architecture Pattern         | Structural Decoupling   | Core Structural Boundaries         | Primary Patterns & Implementation Runtimes            |
++---+----------------------------------+-------------------------+------------------------------------+-------------------------------------------------------+
+| 1 | Monolithic Architecture          | Single Process / Unified| Single Application Package         | MVC, Shared Memory State, Single Relational DB        |
+| 2 | Layered (N-Tier) Architecture    | Horizontal Separation   | UI, Business Logic, Data Layers    | Controller-Service-Repository, Tiered Interfaces      |
+| 3 | Modular Monolith                 | Logical Domain Isolation| Bounded Modules in Single Artifact | Domain-Driven Modules, In-Process Event Bus           |
+| 4 | Hexagonal (Ports & Adapters)     | Strict Inversion        | Isolated Domain Core + Adapters    | Clean Arch, Onion Arch, Interfaces/Dependency Inversion|
+| 5 | Microservices Architecture       | Physical Process Isolation| Domain-Bound Autonomous Services | Database-per-Service, Independent Codebases           |
+| 6 | CQRS & Event Sourcing Pattern    | Read/Write Separation   | Command Models vs Read Projections | Immutable Event Store Log, Projection Builders        |
+| 7 | Pipe and Filter Architecture     | Sequential Processing   | Discrete Data Filters & Pipes      | Stream Transformers, Middleware Chains, ETL Engines   |
++---+----------------------------------+-------------------------+------------------------------------+-------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 1. MONOLITHIC ARCHITECTURE                                                                                                  |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Scope & Focus     | Whole Application Codebase                                                                              |
+| Boundary Style    | Single deployment package; all functional components run within the same OS process and memory space.   |
+| Characteristics   | Simple initial development; high coupling; direct in-memory method calls between features.              |
+| Frameworks/Tools  | Django, Ruby on Rails, Laravel, Spring Boot (unified JAR), ASP.NET Core Monolith                        |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 2. LAYERED (N-TIER) ARCHITECTURE                                                                                            |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Scope & Focus     | Horizontal Functional Separation                                                                        |
+| Boundary Style    | Stacked code layers where upper layers only call directly adjacent lower layers.                        |
+| Characteristics   | Presentation -> Business Logic -> Data Access -> Database. Clear structural separation of concerns.     |
+| Frameworks/Tools  | Spring (Controller/Service/Repository), Entity Framework, Express (MVC Layouts)                         |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 3. MODULAR MONOLITH ARCHITECTURE                                                                                            |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Scope & Focus     | Bounded Domain Isolation inside a Single Runtime                                                        |
+| Boundary Style    | Application is divided into distinct functional modules with strict explicit internal API boundaries.   |
+| Characteristics   | Microservice-like module isolation without the operational complexity of distributed network deployment.|
+| Frameworks/Tools  | Spring Modulith, NestJS Modules, .NET Assembly Isolation, Java Modules (JPMS)                           |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 4. HEXAGONAL (PORTS AND ADAPTERS) / CLEAN ARCHITECTURE                                                                      |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Scope & Focus     | Infrastructure-Independent Business Domain                                                              |
+| Boundary Style    | Core domain logic sits at the center, isolated from databases, frameworks, and APIs via interfaces.     |
+| Characteristics   | Dependency Inversion: Infrastructure adapters depend on core domain interfaces, never vice-versa.       |
+| Frameworks/Tools  | Domain-Driven Design (DDD), TypeScript Interfaces, Go Interfaces, Java/C# Pure Domain Models            |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 5. MICROSERVICES ARCHITECTURE (APPLICATION CODE LEVEL)                                                                      |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Scope & Focus     | Distributed Independent Service Codebases                                                               |
+| Boundary Style    | Application domain split into small, independently built, owned, and versioned code repositories.       |
+| Characteristics   | Each service owns its private data model; zero shared code/database dependencies across boundaries.     |
+| Frameworks/Tools  | Node.js microservices, Go microservices, Spring Cloud, Dapr Runtimes                                    |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 6. CQRS & EVENT SOURCING (INTERNAL DATA PATTERN)                                                                            |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Scope & Focus     | Internal State & Persistence Architecture                                                               |
+| Boundary Style    | Code handling write state (Commands) is completely separated from code handling read state (Queries).   |
+| Characteristics   | State mutations are persisted as an immutable append-only sequence of historical event logs.            |
+| Frameworks/Tools  | EventStoreDB, Axon Framework, Kafka Streams, MediatR (.NET CQRS)                                        |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-------------------------------------------------------------------------------------------------------------------------------+
+| 7. PIPE AND FILTER ARCHITECTURE                                                                                               |
++-------------------+-----------------------------------------------------------------------------------------------------------+
+| Scope & Focus     | Sequential Data Transformation Streams                                                                    |
+| Boundary Style    | Code divided into self-contained processing filters linked together by data pipes.                        |
+| Characteristics   | Each filter transforms incoming stream data and passes it forward without knowing adjacent filter details.|
+| Frameworks/Tools  | Unix Shell Pipelines, Apache NiFi, GStreamer, RxJS Pipelines, Express Middleware Chains                   |
++-------------------+-----------------------------------------------------------------------------------------------------------+
+
+
+====================================================================================================================================================================================
+4. APPLICATION DISTRIBUTION MODEL (How software artifacts are packaged and delivered)
+====================================================================================================================================================================================
+
++---+----------------------------------+------------------------------+---------------------------+--------------------------------------------------+
+| # | Distribution Category            | Delivery Mechanism           | Primary Artifact (Unit)   | Key Registries & Repositories                    |
++---+----------------------------------+------------------------------+---------------------------+--------------------------------------------------+
+| 1 | Source Code & Libraries          | Language Package Registries  | Source Archive / Module   | npm, PyPI, Maven Central, Crates.io, GitHub      |
+| 2 | Containers & Virtual Machines    | Image Registries & Storage   | OCI Image Layer, AMI, OVA | Docker Hub, GitHub Packages (GHCR), AWS ECR      |
+| 3 | Native OS Packages & Executables | System Package Repositories  | .deb, .rpm, .msi, Binary  | APT Repos, YUM/DNF, WinGet, Homebrew, App Stores |
+| 4 | Universal Desktop Sandboxes      | Portable Application Bundles | Flatpak, Snap, AppImage   | Flathub, Snapcraft Store                         |
+| 5 | Cloud-Native Infrastructure Specs| Orchestration Registries     | Helm Chart, TF Module     | Artifact Hub, Terraform Registry, AWS S3         |
++---+----------------------------------+------------------------------+---------------------------+--------------------------------------------------+
+
++-------------------------------------------------------------------------------------------------------------------------------+
+| 1. SOURCE CODE AND LIBRARIES DISTRIBUTION                                                                                     |
++-------------------+-----------------------------------------------------------------------------------------------------------+
+| Artifact Types    | Git repository trees, source code tarballs (.tar.gz), language package modules (.whl, .tgz, .jar, .crate) |
+| Delivery Method   | Downloaded and compiled or imported directly into developers' codebases via package managers.             |
+| Primary Stores    | GitHub, GitLab, npm Registry, PyPI (Python), Maven Central (Java), Crates.io (Rust), NuGet (.NET)         |
+| CLI Tools         | `git`, `npm`, `pip`, `mvn`, `cargo`, `go get`                                                             |
++-------------------+-----------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 2. CONTAINER AND VIRTUAL MACHINE IMAGES                                                                                     |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Artifact Types    | OCI/Docker Container Images, VM Disk Images (.qcow2, .vmdk, .ami, .ova)                                 |
+| Delivery Method   | Immutable runtimes bundling OS binaries, system dependencies, and app code pulled from image registries.|
+| Primary Stores    | Docker Hub, GitHub Container Registry (GHCR), AWS ECR, Google Artifact Registry, Vagrant Cloud          |
+| CLI Tools         | `docker pull`, `podman pull`, `skopeo`, `packer`                                                        |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 3. NATIVE OPERATING SYSTEM PACKAGES AND BINARIES                                                                            |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Artifact Types    | Linux packages (.deb, .rpm), Windows installers (.msi, .exe), macOS packages (.pkg), Standalone Binaries|
+| Delivery Method   | Distributed through OS package channels for direct installation into host system directories.           |
+| Primary Stores    | Debian/Ubuntu APT Repos, Fedora/RHEL YUM Repos, Microsoft Store, Homebrew Core/Cask, Mac App Store       |
+| CLI Tools         | `apt`, `dnf`, `winget`, `brew`, `dpkg`, `rpm`                                                           |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 4. UNIVERSAL PORTABLE SANDBOXES                                                                                             |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Artifact Types    | Self-contained application packages (.flatpak, .snap, .AppImage)                                        |
+| Delivery Method   | Bundles app and libraries into an isolated, cross-distro sandbox without relying on host system packages.|
+| Primary Stores    | Flathub, Snapcraft Store                                                                                |
+| CLI Tools         | `flatpak`, `snap`, `./AppImage`                                                                         |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 5. CLOUD-NATIVE MANIFESTS AND IaC MODULES                                                                                   |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Artifact Types    | Helm Charts (.tgz), Kustomize Templates, Terraform Modules (.tf), CloudFormation Specs (.yaml)          |
+| Delivery Method   | Declarative configuration blueprints describing how multi-container applications should be deployed.    |
+| Primary Stores    | Artifact Hub, Terraform Registry, AWS CloudFormation Registry, Helm OCI Registries                      |
+| CLI Tools         | `helm`, `terraform`, `opentofu`, `kubectl`                                                              |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
+
+====================================================================================================================================================================================
+5. APPLICATION DEPLOYMENT MODEL (How software is released, configured, updated, and executed across environments)
+====================================================================================================================================================================================
+
++---+----------------------------------+------------------------------------+--------------------------+--------------------------------------------------+
+| # | Deployment Strategy              | Infrastructure Release Mechanism   | Downtime & Risk Profile  | Key Tools & Controllers                          |
++---+----------------------------------+------------------------------------+--------------------------+--------------------------------------------------+
+| 1 | Blue-Green Deployment            | Traffic cutover between 2 clusters | Zero Downtime / Low Risk | AWS ALB Target Groups, NGINX Router, K8s Service |
+| 2 | Canary Deployment                | Incremental percentage traffic shift| Zero Downtime / Min Risk | Istio, Argo Rollouts, Flagger, AWS App Mesh     |
+| 3 | Rolling Update Deployment        | Sequential instance replacement    | Zero Downtime / Low Risk | Kubernetes Deployments, Docker Swarm, AWS ECS    |
+| 4 | Recreate Deployment              | Terminate old, spin up new version | Service Downtime / Medium| Docker Compose, Helm (type: Recreate), Terraform |
+| 5 | GitOps (Declarative Deployment)  | Continuous Git-to-Cluster state sync| Continuous / Low Risk    | ArgoCD, Flux CD                                 |
+| 6 | Feature Flags (Runtime Control)  | Code deployed dark, toggled live   | Zero Downtime / Zero Risk| LaunchDarkly, Unleash, Flagsmith, OpenFeature    |
++---+----------------------------------+------------------------------------+--------------------------+--------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 1. BLUE-GREEN DEPLOYMENT                                                                                                    |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Category          | Infrastructure-Level Deployment                                                                         |
+| Operational Logic | Runs two identical environments (Blue=Production, Green=Staging). Once Green passes verification tests, |
+|                   | the load balancer instantly switches 100% of live traffic to Green.                                     |
+| Rollback & Risk   | Instant rollback (switch load balancer back to Blue). Requires 2x infrastructure capacity during update.|
+| Primary Tools     | AWS ALB, NGINX Router, Kubernetes Service Switch                                                        |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 2. CANARY DEPLOYMENT                                                                                                        |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Category          | Infrastructure-Level Deployment                                                                         |
+| Operational Logic | Deploys new version alongside old, routing a tiny fraction of live traffic (e.g., 5%) to the canary.    |
+|                   | Monitors error rates and metrics before progressively shifting remaining production traffic.            |
+| Rollback & Risk   | Automated rollback triggered instantly if error thresholds or latency limits are breached.              |
+| Primary Tools     | Istio Service Mesh, Argo Rollouts, Flagger                                                              |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 3. ROLLING UPDATE DEPLOYMENT                                                                                                |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Category          | Instance-Level Deployment                                                                               |
+| Operational Logic | Incrementally replaces running instances of the old app version with instances of the new version       |
+|                   | one pod/node at a time until the entire cluster is running the updated release.                         |
+| Rollback & Risk   | Zero downtime; rollback requires executing a reverse rolling update across the pool.                    |
+| Primary Tools     | Kubernetes (`RollingUpdate`), Docker Swarm, AWS ECS Service Deployments                                 |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 4. RECREATE DEPLOYMENT                                                                                                      |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Category          | Instance-Level Deployment                                                                               |
+| Operational Logic | Completely shuts down and terminates 100% of running instances before starting up the new version.      |
+| Rollback & Risk   | Incurs brief planned application downtime. Necessary when database schemas cannot run concurrently.     |
+| Primary Tools     | Kubernetes (`type: Recreate`), Docker Compose (`docker compose up --build`), Terraform                  |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 5. GITOPS (DECLARATIVE STATE RECONCILIATION)                                                                                |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Category          | Continuous Deployment Pipeline Architecture                                                             |
+| Operational Logic | Git repositories hold the single source of truth for app manifests. In-cluster agents continuously      |
+|                   | pull state declarations from Git and auto-reconcile any drift in running cluster environments.          |
+| Rollback & Risk   | Rollback is executed cleanly by performing a standard `git revert` on the target repository commit.     |
+| Primary Tools     | ArgoCD, Flux CD                                                                                         |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 6. FEATURE FLAGS / DARK LAUNCHING (RUNTIME RELEASE CONTROL)                                                                 |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Category          | Application-Level Release Control (Decoupled from Deployment)                                           |
+| Operational Logic | New feature code is deployed into production inactive ("dark"). Features are selectively enabled        |
+|                   | at runtime for specific users using dynamic evaluation rules without redeploying code binaries.         |
+| Rollback & Risk   | Zero deployment risk; features can be toggled off instantly via API/UI if issues arise.                 |
+| Primary Tools     | LaunchDarkly, Unleash, Flagsmith, OpenFeature Specification                                             |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
+
+====================================================================================================================================================================================
+6. APPLICATION HOSTING MODEL (How infrastructure compute, storage, and networking are allocated and managed)
+====================================================================================================================================================================================
+
++---+----------------------------------+------------------------------+-------------------------------------+---------------------------------------------------------+
+| # | Hosting Model                    | Infrastructure Abstraction   | Resource Allocation Boundary        | Key Providers & Runtimes                                |
++---+----------------------------------+------------------------------+-------------------------------------+---------------------------------------------------------+
+| 1 | On-Premises (Bare Metal)         | Physical Hardware / Low-Level| Physical Sockets, RAM, Storage SAN  | Dell PowerEdge, HPE ProLiant, OpenStack, MAAS           |
+| 2 | Infrastructure as a Service (IaaS)| Virtualized Hypervisor       | Virtual Machines (vCPU, vRAM, EBS)  | AWS EC2, Google Compute Engine, Azure VMs, Linode      |
+| 3 | Platform as a Service (PaaS)     | Managed App Runtime Engine   | Abstract Container Instance / Droplet| Heroku, Render, AWS Elastic Beanstalk, Fly.io          |
+| 4 | Container Orchestration (CaaS)   | Managed Pod / Cluster Pool   | Pod Compute Requests & Worker Nodes | Kubernetes (EKS, GKE, AKS), Red Hat OpenShift           |
+| 5 | Serverless / FaaS                | Event-Driven Ephemeral       | Execution Memory & Duration Millis  | AWS Lambda, Cloudflare Workers, Google Cloud Run        |
+| 6 | Edge Computing                   | Geographically Distributed   | Edge PoP Isolate Contexts / Micro-VM| Cloudflare Workers, Fastly Compute@Edge, AWS Lambda@Edge|
++---+----------------------------------+------------------------------+-------------------------------------+---------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 1. ON-PREMISES / BARE METAL HOSTING                                                                                         |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Management Scope  | Organization owns and manages physical servers, networking switches, cooling, power, and OS hypervisor. |
+| Allocation Boundary| Fixed physical server hardware resources (CPU cores, RAM DIMMs, physical NVMe/RAID drives).            |
+| Scaling Mechanism | Manual hardware procurement, rack installation, cabling, and hypervisor setup.                          |
+| Use Cases         | High-performance computing (HPC), strict data sovereignty compliance, latency-critical bare metal.      |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 2. INFRASTRUCTURE AS A SERVICE (IaaS)                                                                                       |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Management Scope  | Provider manages physical hardware/hypervisor; user manages OS, networking rules, runtimes, and DBs.    |
+| Allocation Boundary| Virtualized compute instances (sliced vCPUs, allocated memory, cloud block storage volumes).           |
+| Scaling Mechanism | Automated virtual machine scaling via cloud API calls and Auto Scaling Groups (ASGs).                   |
+| Use Cases         | Legacy app migrations, custom OS kernel setups, infrastructure requiring full root-level control.       |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++--------------------------------------------------------------------------------------------------------------------------------+
+| 3. PLATFORM AS A SERVICE (PaaS)                                                                                                |
++-------------------+------------------------------------------------------------------------------------------------------------+
+| Management Scope  | Provider manages OS, system dependencies, web servers, and runtime execution; user only provides code.     |
+| Allocation Boundary| Abstracted execution containers ("Dynos", "Droplets") configured by memory allocation and worker counts.  |
+| Scaling Mechanism | Declarative autoscaling based on incoming HTTP request metrics or instance count configuration sliders.    |
+| Use Cases         | Rapid web application hosting, developer focus on business logic without server management overhead.       |
++-------------------+------------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 4. CONTAINER ORCHESTRATION AS A SERVICE (CaaS)                                                                              |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Management Scope  | Provider manages cluster control plane (Kubernetes masters); user manages container workloads & pods.   |
+| Allocation Boundary| Dynamic pod resource declarations (millicores of CPU, RAM limits, volume claims) allocated across nodes|
+| Scaling Mechanism | Horizontal Pod Autoscaler (HPA) for application pods; Cluster Autoscaler for underlying worker nodes.   |
+| Use Cases         | Complex cloud-native microservices requiring multi-tenant cluster management and service discovery.     |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 5. SERVERLESS / FUNCTION AS A SERVICE (FaaS)                                                                                |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Management Scope  | Provider handles 100% of underlying infrastructure, scaling, OS patching, and process lifecycle.       |
+| Allocation Boundary| Ephemeral execution contexts defined by allocated memory (e.g., 128MB–10GB) billed per execution duration.|
+| Scaling Mechanism | Automatic scaling from zero to thousands of concurrent request executions per millisecond peak.         |
+| Use Cases         | Micro-APIs, asynchronous event handlers, webhook processors, dynamic data conversion pipelines.         |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 6. EDGE COMPUTING HOSTING                                                                                                   |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Management Scope  | Provider manages globally distributed edge data centers running lightweight V8 isolate runtimes.         |
+| Allocation Boundary| Micro-virtual execution contexts situated physically close to the user's geographical location.        |
+| Scaling Mechanism | Automatic geo-distributed replication and instant routing to the nearest active Point of Presence (PoP).|
+| Use Cases         | Ultralow-latency edge API gateways, dynamic CDN processing, personalization, edge AI inference.        |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
+
+====================================================================================================================================================================================
+7. AGENT PROTOCOLS MODEL (How AI Agents connect with users, context/tools, and other autonomous agents)
+====================================================================================================================================================================================
+
++---+----------------------------+-----------------------+-----------------------------+---------------------------------------+------------------------------------------------+
+| # | Protocol Standard          | Target Connection     | Data Unit (PDU)             | Transports & Wire Formats             | Core Interaction Capabilities                  |
++---+----------------------------+-----------------------+-----------------------------+---------------------------------------+------------------------------------------------+
+| 1 | AG-UI (Agent-User)         | Agent <-> User (UI)   | UI Event / State Patch      | HTTP, Server-Sent Events (SSE), WS    | Streaming Tokens, Dynamic Generative UI Widgets|
+| 2 | MCP (Model Context)        | Agent <-> Tools/Data  | Context Frame / Tool Call   | JSON-RPC 2.0 over Stdio, HTTP/SSE     | Standardized Tool Execution, Resource Discovery|
+| 3 | A2A (Agent-to-Agent)       | Agent <-> Agent       | Task / Message / Artifact   | HTTPS, JSON-RPC 2.0, SSE              | Agent Discovery (`agent.json`), Sub-task Delegation|
+| 4 | Agent Protocol (AP)        | Client <-> Runtime    | Task / Step Execution Object| HTTP/1.1, HTTP/2 (REST)               | Universal OpenAPI Execution & Lifecycle Control|
++---+----------------------------+-----------------------+-----------------------------+---------------------------------------+------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 1. AG-UI PROTOCOL (AGENT-USER INTERACTION)                                                                                  |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Protocol Standard | AG-UI (Agent–User Interaction Protocol)                                                                 |
+| Connection Target | AI Agent Backend <-> Frontend User Interfaces (Web App, Mobile UI, Desktop Application)                 |
+| Data Unit (PDU)   | UI Event Streams / State Patches / Generative Component Intents                                         |
+| Key Purpose       | Standardizes real-time, bi-directional communication between AI agents and user interfaces. Enables    |
+|                   | streaming thought processes, rendering interactive generative UI widgets, and handling user feedback.  |
+| Transports        | HTTP, Server-Sent Events (SSE), WebSockets                                                              |
+| API Interaction   | Streaming JSON events (`message`, `tool_call_state`, `state_patch`), Reactive UI SDK hooks              |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 2. MCP (MODEL CONTEXT PROTOCOL)                                                                                             |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Protocol Standard | MCP (Model Context Protocol - Open Standard)                                                            |
+| Connection Target | AI Agent Runtime <-> External Tools, Data Sources, Local Filesystems, & Prompt Libraries                |
+| Data Unit (PDU)   | Context Frame / Tool Call Invocation / Resource Payload                                                 |
+| Key Purpose       | Connects LLM agents to external tools and context via a unified client-server interface, eliminating standard |
+|                   | custom integration code per tool or API.                                                                |
+| Transports        | JSON-RPC 2.0 over Stdio (Local process execution), HTTP with SSE (Remote tool servers)                  |
+| API Interaction   | JSON-RPC Methods (`tools/list`, `tools/call`, `resources/read`, `prompts/get`)                          |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 3. A2A PROTOCOL (AGENT-TO-AGENT)                                                                                            |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Protocol Standard | A2A (Agent2Agent Protocol - Open Standard)                                                              |
+| Connection Target | Autonomous Agent <-> Remote Autonomous Agent (Multi-Agent Mesh / Swarm Networks)                         |
+| Data Unit (PDU)   | Task Specification / Communication Message / Parts (TextPart, FilePart, DataPart)                       |
+| Key Purpose       | Allows heterogeneous AI agents across frameworks and providers to discover each other, delegate sub-tasks, |
+|                   | negotiate execution goals, and exchange intermediate working artifacts securely.                         |
+| Transports        | HTTPS, JSON-RPC 2.0, Server-Sent Events (SSE)                                                           |
+| API Interaction   | Agent Card Discovery (`/.well-known/agent.json`), Task Execution Endpoints (`tasks/send`, `tasks/get`)   |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 4. AGENT PROTOCOL (EXECUTION & LIFECYCLE)                                                                                   |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Protocol Standard | Agent Protocol (AI Engineer Foundation Standard)                                                        |
+| Connection Target | Client Application / Orchestrator <-> Agent Execution Engine                                            |
+| Data Unit (PDU)   | Task Object / Step Execution Object                                                                     |
+| Key Purpose       | Standardizes the REST interface for starting agent tasks, stepping through iterative reasoning loops,   |
+|                   | submitting step inputs, and inspecting agent progress across different frameworks.                       |
+| Transports        | HTTP/1.1, HTTP/2                                                                                        |
+| API Interaction   | OpenAPI RESTful Endpoints (`POST /agent/tasks`, `POST /agent/tasks/{task_id}/steps`)                    |
++-------------------+---------------------------------------------------------------------------------------------------------+
