@@ -249,12 +249,12 @@ LangChain Mapping:
 | PROJECT: "My-GenAI-App-Workspace"                                               |
 | (The overarching container/database for all your application logs)              |
 |                                                                                 |
-|   TRACE: "Single User Request Journey" [00:37:46]                               |
-|   (Captures the entire end-to-end execution path from input to output)          |
-|   +-------------------------------------------------------------------------+   |
-|   |                                                                         |   |
-|   | [User] ──> [ Prompt ] ───────> [ LLM ] ───────> [ Parser ]         |   |                                                                       
-|   |                 ▼                   ▼                   ▼             |   |      
+| TRACE: "Single User Request Journey" [00:37:46]                               |
+| (Captures the entire end-to-end execution path from input to output)          |
+| +-------------------------------------------------------------------------+   |
+|  |                                                                         |   |
+|  |[User] ──>[ Prompt ]───────>[ LLM ]───────> [Parser ]         |   |                                                                       
+|  |                 ▼                   ▼                   ▼             |   |      
 |   |             ( RUN #1 )          ( RUN #2 )           ( RUN #3 )         |   |
 |   |           "Format Inputs"     "Call OpenAI"       "Extract JSON"        |   |
 |   |                                                                         |   |

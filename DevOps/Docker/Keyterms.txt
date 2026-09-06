@@ -1,0 +1,28 @@
+==================================================================================================
+HOUSING ANALOGY VS. TECHNICAL ARCHITECTURE (1:1 MAPPING)
+==================================================================================================
+
+House / Apartment Analogy           Technical Component         Technical Role
+----------------------------------  --------------------------  ---------------------------------------------------------
+Physical Server / Land              Physical Hardware           The underlying physical hardware (CPU, RAM, Storage).
+
+Foundation & Parent Utilities Grid  Host OS Kernel              The core system managing hardware access for everyone.
+
+Entire Independent Flat             Virtual Machine (VM)        A heavy, fully self-contained system with its own OS.
+
+Sub-Meter & Child Utilities Grid    Guest OS Kernel (in VM)     The full OS kernel running inside a single VM.
+
+Property Developer / Architect      Hypervisor                  Manages hardware virtualization to slice server into VMs.
+
+Rented PG Room                      Docker Container            A lightweight, isolated running environment for an app.
+
+Room Furnishing Blueprint           Container Image             The read-only template used to create/start containers.
+
+Tenant's Belongings & Apps          App Code & Dependencies     Your specific software, configs, and runtime files.
+
+Lock & Soundproof Walls             Namespaces                  Isolates processes/files so rooms can't see each other.
+
+Electricity & Water Meters          cgroups (Control Groups)    Limits and tracks CPU, RAM, and disk usage per container.
+
+Building Manager / Landlord         Container Engine (Docker)   Builds, runs, manages, and destroys containers.
+==================================================================================================
