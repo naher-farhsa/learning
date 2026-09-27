@@ -84,7 +84,7 @@ docker <root_command> <root_command_flags> $(docker <child_command> <child_comma
 
 ===========================================================================================================================
 
-Manual Depolyment Steps of Flask App:
+Manual Deployment Steps of Flask App:
 1. OS Setup - Ubuntu
 2. Update Source Repo - apt update
 3. Install Package Dependencies - apt install python3-flask
@@ -93,6 +93,17 @@ Manual Depolyment Steps of Flask App:
 6. Launch Web Server - flask run
 
 dockerfile:
+FROM       : Sets the foundation base image (must be the first instruction).
+WORKDIR    : Sets the default working directory inside the container for subsequent instructions.
+COPY       : Copies files/directories from the host build context into the container filesystem.
+ADD        : Like COPY, but automatically extracts tar archives and accepts remote URLs.
+RUN        : Executes shell commands during the build process to create a new layer (e.g., package installs).
+ENV        : Sets persistent environment variables inside the container.
+EXPOSE     : Documents the network ports the container listens on at runtime (does not publish ports automatically).
+CMD        : Provides default arguments or runtime commands when the container starts (can be overridden).
+ENTRYPOINT : Defines the main executable that always runs when the container starts.
+
+---------------------------------------------------------------------------------------------------------------------------
 FROM ubuntu
 
 RUN app-get update
@@ -105,7 +116,8 @@ ENV FLASK_APP=/opt/app.py
 
 ENVIRONMENT flask run --host=0.0.0.0
 
-docker build -t
+docker build -t myflask:v1.0
+docker push myflask:v1.0
 ============================================================================================================================
 
 ==================================================================================================
