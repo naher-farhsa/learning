@@ -1,0 +1,71 @@
+====================================================================================================================================================================
+
+1. DEVOPS VS. GITOPS DEPLOYMENT PIPELINE OVERVIEW (Source Code -> GitHub -> Remote VM)
+====================================================================================================================================================================
+
++---+----------------------------------+------------------------------------+--------------------------+--------------------------------------------------+
+| # | Model Pattern                    | Trigger & Core Mechanism           | Data Flow Direction      | Credential Storage & Security                    |
++---+----------------------------------+------------------------------------+--------------------------+--------------------------------------------------+
+| 1 | DevOps (Push Model)              | Central CI/CD logs into VM & pushes| External CI Server -> VM | SSH keys stored in central CI/CD platform        |
+| 2 | GitOps (Pull Model)              | Local VM Agent checks Git & pulls  | VM -> Git Repository     | Read-only Git Token stored locally inside VM     |
++---+----------------------------------+------------------------------------+--------------------------+--------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 1. DEVOPS WORKFLOW (PUSH-BASED DEPLOYMENT)                                                                                 |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Pipeline Phase    | Detailed Step-by-Step Flow (Local PC -> GitHub -> Remote VM)                                            |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Step 1: Local PC  | Developer commits source code locally and runs `git push origin main` to upload changes to GitHub.       |
+| Step 2: GitHub    | GitHub Actions detects code changes and triggers an automated pipeline defined in `.github/workflows/`. |
+| Step 3: Build     | The CI server compiles application binaries or packaged bundles inside the cloud runner context.        |
+| Step 4: Network   | GitHub Actions retrieves a stored SSH Private Key and opens an inbound network session to the VM IP.    |
+| Step 5: VM Exec   | GitHub Actions remotely executes deployment commands on the VM: `scp app.tar.gz` and `systemctl restart` |
+| Security Model    | Firewall must open Inbound Port 22 (SSH). Central CI server possesses full root access to the VM.       |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| 2. GITOPS WORKFLOW (PULL-BASED DEPLOYMENT)                                                                                 |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Pipeline Phase    | Detailed Step-by-Step Flow (Local PC -> GitHub App Repo -> GitHub Config Repo -> Remote VM)             |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Step 1: Local PC  | Developer commits source code locally and pushes a version tag `v2.0` to the Application Repository.     |
+| Step 2: GitHub CI | GitHub Actions builds the app image/artifact and pushes a version bump commit to a distinct Config Repo. |
+| Step 3: Git State | The Configuration Repository stores the target state manifest (e.g., `version: v2.0` inside YAML).      |
+| Step 4: VM Agent  | An agent or script running inside the VM continuously polls the Config Repo via standard HTTPS outbound.|
+| Step 5: Sync Exec | The VM Agent detects state drift (`v2.0` in Git vs `v1.0` live), pulls the bundle, and restarts itself.  |
+| Security Model    | Zero inbound network ports open on VM. If someone manually changes files on the VM, GitOps reverts it. |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
+# ====================================================================================================================================================================================
+2. DEPLOYMENT SETUP & COMPONENT BOUNDARIES
+
++---+----------------------------------+------------------------------------+--------------------------------------------------+
+| # | Setup Component                  | DevOps (Push) Implementation       | GitOps (Pull) Implementation                     |
++---+----------------------------------+------------------------------------+--------------------------------------------------+
+| 1 | Local Machine Responsibility     | Write code, push to main repo      | Write code, push to main repo                    |
+| 2 | GitHub Repository Structure      | 1 Repo (Source + Deploy Workflow)  | 2 Repos (App Code Repo + Deployment Manifest Repo)|
+| 3 | Remote VM Running Services       | Application process + SSH Daemon   | Application process + Background Sync Agent      |
+| 4 | Network & Firewall Rules         | Inbound SSH / WinRM ports open     | Strict outbound-only HTTPS traffic               |
++---+----------------------------------+------------------------------------+--------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| DEVOPS SETUP DETAILS (LOCAL TO REMOTE VM)                                                                                  |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Setup Target      | Operational Requirements                                                                                |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Local Machine     | Git CLI installed; SSH key pair generated (`ssh-keygen`). Public key uploaded to VM's `authorized_keys`.|
+| GitHub Config     | Store VM IP address (`VM_HOST`) and Private SSH Key (`VM_KEY`) inside GitHub Repository Secrets.        |
+| Remote VM Setup   | Linux VM running OpenSSH server, web server runtime (e.g., Node.js/Systemd), open public firewall ports. |
+| Execution Method  | Continuous Integration platform acts as remote administrator via SSH command injection.                 |
++-------------------+---------------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------------------------------------------------------------+
+| GITOPS SETUP DETAILS (LOCAL TO REMOTE VM)                                                                                  |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Setup Target      | Operational Requirements                                                                                |
++-------------------+---------------------------------------------------------------------------------------------------------+
+| Local Machine     | Git CLI installed; permissions to push code to App Repo and manifest updates to Config Repo.            |
+| GitHub Config     | GitHub Personal Access Token (PAT) generated with read access to the Config Repo.                       |
+| Remote VM Setup   | Background service installed on VM (Cron job, `ansible-pull`, or custom agent) running local loop.      |
+| Execution Method  | VM periodically executes local script: `git pull`, compares hash/version, updates target state.         |
++-------------------+---------------------------------------------------------------------------------------------------------+
