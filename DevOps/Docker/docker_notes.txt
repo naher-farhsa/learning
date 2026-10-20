@@ -1,0 +1,224 @@
+Docker:
+It is an open-source platform that uses operating-system-level virtualization to bundle software into lightweight, isolated packages called containers. It allows developers to package an application along with all of its necessities—such as code, runtime, system tools, libraries, and configurations—so that it runs reliably and identically on any computer, regardless of differing local settings.
+ 
+VM vs Docker Container:
+ 
+- VM bundle a full copy of an operating system, the application, and necessary drivers. This makes them bulky (often several gigabytes) and slow to boot.
+ 
+- Containers share the host computer's operating system kernel instead of installing a separate one. This makes them highly efficient, lightweight (often only megabytes), and capable of starting up almost instantly
+ 
+Docker Ecosystem:
+- Docker Engine: Underlying heart of the system.
+- Docker Desktop: GUI for Windows, macOS, and Linux that includes Docker Engine, UI, and extra dev tools.
+- Docker Hub: Cloud-based registry used for finding and sharing container images
+ 
+=====================================================================================================================================================
+ 
+Architectural Components:
+ 
+Docker Engine works on a client-server architecture that manage containers lifecycle via its 3 components. 
+   - Server (dockerd): Its a long-running background process that manages Docker objects such as images, containers, networks, and storage volumes. It listens for Docker API requests and performs the heavy lifting of container lifecycle management.
+   - REST API: A standardized interface that sits between the client and the daemon. It allows the Docker Client or external programs to communicate programmatically with dockerd to instruct it on what to do.
+ 
+   - CLI: The docker terminal tool used by developers. When you run a command like docker run, the CLI translates your command into a REST API call and sends it to the Docker Daemon (dockerd).
+ 
+   - Container Runtimes (containerd & runc): Beneath the (dockerd) sit lower-level runtimes. Docker Engine hands off the actual execution of containers to containerd (which manages the container lifecycle) and runc (the lightweight tool that actually spawns the container using Linux kernel features).
+ 
+Functional Components:
+ 
+- Docker Images: Read-only templates made of layered instructions that serve as the blueprints for creating containers.
+ 
+- Docker Containers: Runnable, isolated instances of images that pack application code and dependencies while sharing the host OS kernel.
+ 
+- Docker Network: Virtual networks (such as bridge, host, or overlay) that allow containers to safely communicate with each other and the outside world.
+ 
+- Docker Storage / Volumes: Mechanisms used to persist data generated and used by containers outside of the container's ephemeral file system layer.
+ 
+ 
+NOTE: It is important to note that the Docker CLI does not need to be on the same host as the Docker Engine. You can install it on a remote system (e.g., your laptop) and connect to a remote Docker Engine using the -H option, specifying the host address and port.
+ 
+[Local Laptop]                     [Remote VM]
++------------------+  TCP / SSH   +---------------+
+| Local Docker CLI | -----------> | Docker Engine | ---> Runs Containers
++------------------+              +---------------+
+ 
+docker -H ssh://user@<VM_IP> ps
+ 
+docker context create remote-vm --docker "host=ssh://user@<VM_IP>"
+docker context use remote-vm
+docker ps  # Directly manages containers on the remote VM
+ 
+export DOCKER_HOST=tcp://<VM_IP>:2375
+docker ps
+ 
+=====================================================================================================================================================
+ 
+dev machine docker engine =  host_port
+docker container = container_port
+ 
+Interaction & Lifecycle Flags:
+ 
+-q       : list (container_id/image_id)
+--name   : asign container name
+-d       : detached mode
+-i       : interactive mode (for cli inputs)
+-t (tty) : pseudo-terminal  (most used as -it)
+-t (tag) : tags image with version
+--rm     : removes container (rm is a docker command and --rm is docker run command flag)
+ 
+Networking & Port Mapping Flags:
+- p/-P <host_port> : <container_port>
+ 
+-p : publish     
+-P : publish all (random porting)
+--network : specific docker network
+ 
+Environment & Configuration Flags:
+-e KEY=value
+ 
+-e : set env for running container 
+--env-file : read whole env file
+ 
+Storage & Volume Flags:
+-v <host_path>:<container_path>
+--mount type=bind,source=<host_path>,target=<container_path>
+ 
+-v : mounts storage volume 
+--mount : mounts storage volumes but use key-value pair syntax
+ 
+Resource Limitation Flags
+-m 512m/1g
+--cpus="1.5"
+--restart always, --restart on-failure
+ 
+-m : sets max memory container can use
+--cpus : sets no of cpus cores available for container
+--restart : configures restart policy for crashed container/ daemon reboots
+ 
+ 
+==========================================================================================================================
+ 
+Docker Basic Commands:
+ 
+docker --version
+ 
+docker ps (show details of running container only )
+ 
+docker ps -a (show details all container (running + stopped)
+ 
+docker images / docker image ls
+ 
+docker run <image_name/image_id> (If not found pulls "latest" image by default runs image)
+ 
+docker stop <container_name/container_id> (can stop multiple at onces with "," separator or in attached mode "ctrl +c")
+ 
+docker rm <container_name/container_id> (delete (stopped) container)
+ 
+docker pull <image_name:image_version>  (pulls images from registries : docker hub, aks, eks, etc)
+ 
+docker rmi  <image_name/image_id> (deletes (first remove tagged containers) images
+ 
+ 
+Docker Image Commands:
+ 
+docker build -t <image_name:version_tag> .    # "." = means Dockerfile exist in current working directory
+ 
+docker build [OPTIONS] PATH | URL | -
+ 
+[OPTIONS]      : Flags passed to customize the build (e.g., -t, -f, --build-arg).
+ 
+PATH | URL | - : Build Context: Specifies where the source files and Dockerfile are located:
+ 
+                - PATH : Local directory (e.g : "." for current directory or ./my-project)
+                - URL  : Remote Git repo or URL (e.g:[https://github.com/user/repo.git])
+                - "-"  : Pass Dockerfile directly via stdin.
+ 
+Docker Network Commands:
+ 
+docker network create <network_name>  
+ 
+docker network ls  
+ 
+docker run -d --name <container_name> --network <network_name> <image_name>  
+ 
+docker network connect <network_name> <container_name>
+ 
+docker network disconnect <network_name> <container_name>
+docker network rm <network_name>
+ 
+ 
+Nested commands:
+ 
+docker <root_command> <root_command_flags> $(docker <child_command> <child_command_flags>)
+ 
+===========================================================================================================================
+ 
+Manual Deployment Steps of Flask App:
+1. OS Setup - Ubuntu
+2. Update Source Repo - apt update
+3. Install Package Dependencies - apt install python3-flask
+4. Copy Source Code - app.py -> /opt/app.py
+5. Set Env - FLASK_APP=/opt/app.py
+6. Launch Web Server - flask run
+ 
+dockerfile:
+FROM       : Sets the foundation base image (must be the first instruction).
+WORKDIR    : Sets the default working directory inside the container for subsequent instructions.
+COPY       : Copies files/directories from the host build context into the container filesystem.
+ADD        : Like COPY, but automatically extracts tar archives and accepts remote URLs.
+RUN        : Executes shell commands during the build process to create a new layer (e.g., package installs).
+ENV        : Sets persistent environment variables inside the container.
+EXPOSE     : Documents the network ports the container listens on at runtime (does not publish ports automatically).
+CMD        : Provides default arguments or runtime commands when the container starts (can be overridden).
+ENTRYPOINT : Defines the main executable that always runs when the container starts.
+ 
+---------------------------------------------------------------------------------------------------------------------------
+FROM ubuntu
+ 
+RUN app-get update
+ 
+RUN apt-get install -y python3-flask
+ 
+COPY app.py /opt/app.py
+ 
+ENV FLASK_APP=/opt/app.py
+ 
+ENVIRONMENT flask run --host=0.0.0.0
+ 
+docker build -t myflask:v1.0 .
+docker push myflask:v1.0
+============================================================================================================================
+ 
+============================================================================================================================
+HOUSING ANALOGY VS. TECHNICAL ARCHITECTURE (1:1 MAPPING)
+============================================================================================================================
+ 
+House / Apartment Analogy           Technical Component         Technical Role
+----------------------------------  --------------------------  ---------------------------------------------------------
+Physical Server / Land              Physical Hardware           The underlying physical hardware (CPU, RAM, Storage).
+ 
+Foundation & Parent Utilities Grid  Host OS Kernel              The core system managing hardware access for everyone.
+ 
+Entire Independent Flat             Virtual Machine (VM)        A heavy, fully self-contained system with its own OS.
+ 
+Sub-Meter & Child Utilities Grid    Guest OS Kernel (in VM)     The full OS kernel running inside a single VM.
+ 
+Property Developer / Architect      Hypervisor                  Manages hardware virtualization to slice server into VMs.
+ 
+Rented PG Room                      Docker Container            A lightweight, isolated running environment for an app.
+ 
+Room Furnishing Blueprint           Container Image             The read-only template used to create/start containers.
+ 
+Tenant's Belongings & Apps          App Code & Dependencies     Your specific software, configs, and runtime files.
+ 
+Lock & Soundproof Walls             Namespaces                  Isolates processes/files so rooms can't see each other.
+ 
+Electricity & Water Meters          cgroups (Control Groups)    Limits and tracks CPU, RAM, and disk usage per container.
+ 
+Building Manager / Landlord         Container Engine (Docker)   Builds, runs, manages, and destroys containers.
+=============================================================================================================================
+ 
+Port Mapping : when a container is running the app its app will listen on container port and that container port is mapped to some host port
+ 
+================================================================================================================================================
+ 

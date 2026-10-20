@@ -2,7 +2,7 @@
 
 | Pattern / Approach                 | Level       | Type    | Where it Fits                | Best Use Case                         |
 | ---------------------------------- | ----------- | ------- | ---------------------------- | ------------------------------------- |
-| **Application Logic (App Design)** | Application | Product | Defines overall app behaviour | Resume Analyzer, Chat app, RAG system |
+| **Application Logic (App Design)** | Application | Product | Defines overall app behaviour| Resume Analyzer, Chat app, RAG system |
 
 ---
 

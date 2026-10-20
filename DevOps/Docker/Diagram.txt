@@ -1,0 +1,150 @@
+┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                         USERS / CLIENTS                                                  │
+│ Browser │ Mobile App │ React │ Angular │ Streamlit │ Other APIs │ CLI │ Third Party Apps               │
+└──────────────────────────────────────────────┬───────────────────────────────────────────────────────────┘
+                                               │ HTTPS
+                                               ▼
+┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                              CLOUD EDGE (AWS / Azure / GCP / OCI)                                       │
+│                                                                                                          │
+│ DNS (Route53)                                                                     CDN (CloudFront)      │
+│ SSL/TLS Certificate                                                               WAF / DDoS            │
+│                                                                                                          │
+│                    Cloud Load Balancer (ALB / NLB / Azure LB / GCP LB)                                  │
+└──────────────────────────────────────────────┬───────────────────────────────────────────────────────────┘
+                                               │
+                                               ▼
+┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                              KUBERNETES CLUSTER ENTRY                                                   │
+│                                                                                                          │
+│ Ingress Controller (NGINX / Traefik)                                                                     │
+│ OR API Gateway (Kong / APISIX)                                                                           │
+│ OR Istio Gateway (Service Mesh)                                                                          │
+└──────────────────────────────────────────────┬───────────────────────────────────────────────────────────┘
+                                               │
+                                               ▼
+┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                 KUBERNETES CONTROL PLANE                                                 │
+│                                                                                                          │
+│ API Server │ Scheduler │ Controller Manager │ ETCD                                                      │
+└──────────────────────────────────────────────┬───────────────────────────────────────────────────────────┘
+                                               │
+                                               ▼
+══════════════════════════════════════════════════════════════════════════════════════════════════════════════
+
+                    KUBERNETES WORKER NODES
+
+┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ Node 1                                                                                                   │
+│                                                                                                          │
+│ kubelet │ kube-proxy │ Container Runtime (containerd)                                                    │
+│                                                                                                          │
+│  ┌─────────────────────────────┐                                                                         │
+│  │ Pod : Order Service         │                                                                         │
+│  │-----------------------------│                                                                         │
+│  │ Docker Container            │                                                                         │
+│  │ Spring Boot                 │                                                                         │
+│  │ Embedded Tomcat             │                                                                         │
+│  │ Controllers                 │                                                                         │
+│  │ Services                    │                                                                         │
+│  │ Spring Data JPA             │                                                                         │
+│  │ Business Logic              │                                                                         │
+│  └─────────────────────────────┘                                                                         │
+│                                                                                                          │
+│  ┌─────────────────────────────┐                                                                         │
+│  │ Pod : Payment Service       │                                                                         │
+│  └─────────────────────────────┘                                                                         │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ Node 2                                                                                                   │
+│                                                                                                          │
+│ kubelet │ kube-proxy │ containerd                                                                        │
+│                                                                                                          │
+│  ┌─────────────────────────────┐                                                                         │
+│  │ Pod : AI Service            │                                                                         │
+│  │-----------------------------│                                                                         │
+│  │ Docker Container            │                                                                         │
+│  │ Python                      │                                                                         │
+│  │ FastAPI                     │                                                                         │
+│  │ Uvicorn                     │                                                                         │
+│  │ LangChain                   │                                                                         │
+│  │ LangGraph                   │                                                                         │
+│  │ Pydantic                    │                                                                         │
+│  │ Agent Logic                 │                                                                         │
+│  └─────────────────────────────┘                                                                         │
+│                                                                                                          │
+│  ┌─────────────────────────────┐                                                                         │
+│  │ Pod : RAG Service           │                                                                         │
+│  └─────────────────────────────┘                                                                         │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+══════════════════════════════════════════════════════════════════════════════════════════════════════════════
+                               KUBERNETES NETWORKING
+
+                  Service (ClusterIP)
+                         │
+              Internal Load Balancer
+                         │
+          DNS (order-service.default.svc.cluster.local)
+
+══════════════════════════════════════════════════════════════════════════════════════════════════════════════
+                              SHARED PLATFORM SERVICES
+
+                       Redis Cache
+                            │
+                            │
+ Kafka / RabbitMQ (Messaging)
+                            │
+                            │
+ PostgreSQL / MySQL / MongoDB
+                            │
+                            │
+ Vector DB (Chroma / Pinecone / Milvus / PGVector)
+                            │
+                            │
+ Object Storage (S3 / Azure Blob / GCS)
+                            │
+                            │
+ Secrets Manager / Vault
+                            │
+                            │
+ Elasticsearch / OpenSearch
+
+══════════════════════════════════════════════════════════════════════════════════════════════════════════════
+                              OBSERVABILITY
+
+ Prometheus
+ Grafana
+ Loki
+ ELK Stack
+ Jaeger
+ OpenTelemetry
+ AlertManager
+
+══════════════════════════════════════════════════════════════════════════════════════════════════════════════
+                              DEVOPS / DELIVERY
+
+ GitHub / GitLab / Azure DevOps
+
+        │
+
+ CI Pipeline
+ (GitHub Actions / Jenkins)
+
+        │
+
+ Docker Build
+
+        │
+
+ Docker Registry
+ (Docker Hub / AWS ECR / ACR / GCR)
+
+        │
+
+ ArgoCD / FluxCD (GitOps)
+
+        │
+
+ Kubernetes Deployment
